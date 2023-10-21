@@ -5,53 +5,53 @@ using Microsoft.AspNetCore.Mvc;
 namespace AnimeWeb.Controllers
 {   
     [ApiController]
-    [Route("/api/capitulos")]
-    public class CapituloController : Controller
+    [Route("/api/chapters")]
+    public class ChapterController : Controller
     {
-        private readonly ILogger<CapituloController> _logger;
-        private CapituloService _capituloService;
+        private readonly ILogger<ChapterController> _logger;
+        private ChapterService _chapterService;
 
-        public CapituloController(ILogger<CapituloController> logger, CapituloService capituloService)
+        public ChapterController(ILogger<ChapterController> logger, ChapterService chapterService)
         {
             _logger = logger;
-            _capituloService = capituloService;
+            _chapterService = chapterService;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<CapituloModel>>> getCApitulos()
+        public async Task<ActionResult<IEnumerable<ChapterModel>>> getCApitulos()
         {
-            return Ok(await _capituloService.getCapitulos());
+            return Ok(await _chapterService.getChapters());
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CapituloModel>> createCapitulo([FromBody] CapituloModel capitulo)
+        public async Task<ActionResult<ChapterModel>> createCapitulo([FromBody] ChapterModel chapter)
         {
-            if (capitulo == null)
+            if (chapter == null)
             {
                 return BadRequest();
             }
 
-            var newCapitulo = await _capituloService.createCapitulo(capitulo);
+            var newCapitulo = await _chapterService.createChapter(chapter);
 
-            return Ok(newCapitulo);
+            return Created(string.Empty, newCapitulo);
         }
 
         [HttpPut]
         [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<CapituloModel>> updateCapitulo(int id, [FromBody] CapituloModel capitulo)
+        public async Task<ActionResult<ChapterModel>> updateCapitulo(int id, [FromBody] ChapterModel chapter)
         {
 
-            if (id != capitulo.id)
+            if (id != chapter.id)
             {
                 return BadRequest();
             }
 
-            var updateCapitulo = await _capituloService.updateCapitulo(id, capitulo);
+            var updateCapitulo = await _chapterService.updateChapter(id, chapter);
 
             return Ok(updateCapitulo);
         }
@@ -61,14 +61,14 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<CapituloModel>> getCapituloId(int id)
+        public async Task<ActionResult<ChapterModel>> getCapituloId(int id)
         {
             if (id == 0)
             {
                 return BadRequest();
             }
 
-            var capitulo = await _capituloService.getCapituloId(id);
+            var capitulo = await _chapterService.getChapterId(id);
 
             if (capitulo == null)
             {
@@ -82,14 +82,14 @@ namespace AnimeWeb.Controllers
         [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CapituloModel>> removeCapitulo(int id)
+        public async Task<ActionResult<ChapterModel>> removeCapitulo(int id)
         {
             if (id == 0)
             {
                 return BadRequest();
             }    
 
-            var capitulo = await _capituloService.removeCapitulo(id);
+            var capitulo = await _chapterService.removeChapter(id);
             return Ok(capitulo);
         }
     }

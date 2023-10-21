@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using AnimeWeb.Data;
 using AnimeWeb.Repository;
 using AnimeWeb.Repository.IRepository;
@@ -11,13 +12,17 @@ var conectionString = builder.Configuration.GetConnectionString("DefaultConectio
 builder.Services.AddDbContext<DataContext>(
     option => option.UseSqlite(conectionString) 
 );
+//Para ignorar ciclos repetitivos
+builder.Services.AddControllers().AddJsonOptions(x =>
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 //Repository
 builder.Services.AddScoped<IAnimeRepository,AnimeRepository>();
-builder.Services.AddScoped<ICapituloRepository,CapituloRepository>();
+builder.Services.AddScoped<IChapterRepository,ChapterRepository>();
+
 //Service
 builder.Services.AddScoped<AnimeService>();
-builder.Services.AddScoped<CapituloService>();
+builder.Services.AddScoped<ChapterService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

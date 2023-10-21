@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimeWeb.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231018172117_CreacionDeLaTablaCapitulo")]
-    partial class CreacionDeLaTablaCapitulo
+    [Migration("20231021152553_ModificandoLasTablasAnimeYChapter")]
+    partial class ModificandoLasTablasAnimeYChapter
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,7 +34,7 @@ namespace AnimeWeb.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("status")
+                    b.Property<bool>("state")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("updateDate")
@@ -48,7 +48,7 @@ namespace AnimeWeb.Migrations
                     b.ToTable("Anime");
                 });
 
-            modelBuilder.Entity("AnimeWeb.Models.CapituloModel", b =>
+            modelBuilder.Entity("AnimeWeb.Models.ChapterModel", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -57,14 +57,14 @@ namespace AnimeWeb.Migrations
                     b.Property<int>("animeId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("animeModelId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("description")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("episode")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("state")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("title")
@@ -79,18 +79,20 @@ namespace AnimeWeb.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("animeModelId");
+                    b.HasIndex("animeId");
 
                     b.ToTable("Capitulo");
                 });
 
-            modelBuilder.Entity("AnimeWeb.Models.CapituloModel", b =>
+            modelBuilder.Entity("AnimeWeb.Models.ChapterModel", b =>
                 {
-                    b.HasOne("AnimeWeb.Models.AnimeModel", "animeModel")
+                    b.HasOne("AnimeWeb.Models.AnimeModel", "AnimeModel")
                         .WithMany("chapters")
-                        .HasForeignKey("animeModelId");
+                        .HasForeignKey("animeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("animeModel");
+                    b.Navigation("AnimeModel");
                 });
 
             modelBuilder.Entity("AnimeWeb.Models.AnimeModel", b =>

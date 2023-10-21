@@ -3,6 +3,7 @@ using System;
 using AnimeWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimeWeb.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231019182821_CreateMigrations")]
+    partial class CreateMigrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.12");
@@ -31,7 +34,7 @@ namespace AnimeWeb.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("state")
+                    b.Property<bool>("status")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("updateDate")
@@ -45,7 +48,7 @@ namespace AnimeWeb.Migrations
                     b.ToTable("Anime");
                 });
 
-            modelBuilder.Entity("AnimeWeb.Models.ChapterModel", b =>
+            modelBuilder.Entity("AnimeWeb.Models.CapituloModel", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -59,9 +62,6 @@ namespace AnimeWeb.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("episode")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("state")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("title")
@@ -81,7 +81,7 @@ namespace AnimeWeb.Migrations
                     b.ToTable("Capitulo");
                 });
 
-            modelBuilder.Entity("AnimeWeb.Models.ChapterModel", b =>
+            modelBuilder.Entity("AnimeWeb.Models.CapituloModel", b =>
                 {
                     b.HasOne("AnimeWeb.Models.AnimeModel", "AnimeModel")
                         .WithMany("chapters")

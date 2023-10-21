@@ -2,7 +2,6 @@ using AnimeWeb.Data;
 using AnimeWeb.Models;
 using AnimeWeb.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace AnimeWeb.Service
 {
@@ -34,8 +33,8 @@ namespace AnimeWeb.Service
 
         public async Task<AnimeModel> updateAnime(int id, [FromBody] AnimeModel anime){
 
-            await _animeRepository.Update(anime);
-            return anime;
+            AnimeModel animeUpdate = await _animeRepository.Update(anime);
+            return animeUpdate;
         }
 
         public async Task<AnimeModel> getAnimeId(int id){
@@ -51,10 +50,9 @@ namespace AnimeWeb.Service
             await _animeRepository.Remove(anime);
             return anime;
         }
- 
-        //probando metodo que traera animes y sus capitulos 
-        public async Task<AnimeModel> getAnimeCapitulos(int id){
-            var anime =  await _bd.Anime.Where(A => A.Id  == id).Include(A => A.chapters).FirstAsync();
+
+        public async Task<AnimeModel> getAnimeChapters(int id){
+            AnimeModel anime = await _animeRepository.getanimeChapters(id);
             return anime;
         }
 

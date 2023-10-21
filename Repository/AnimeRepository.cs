@@ -2,6 +2,7 @@
 using AnimeWeb.Data;
 using AnimeWeb.Models;
 using AnimeWeb.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace AnimeWeb.Repository
 {
@@ -12,6 +13,12 @@ namespace AnimeWeb.Repository
         public AnimeRepository(DataContext db) : base(db)
         {
             _db = db;
+        }
+
+        public async Task<AnimeModel> getanimeChapters(int id)
+        {
+            AnimeModel anime = await _db.Anime.Where(A => A.Id == id).Include(A => A.chapters).FirstAsync();
+            return anime;
         }
 
         public async Task<AnimeModel> Update(AnimeModel entidad)
