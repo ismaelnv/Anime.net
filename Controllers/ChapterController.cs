@@ -1,4 +1,5 @@
 using AnimeWeb.Models;
+using AnimeWeb.Models.Dto;
 using AnimeWeb.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,14 +28,14 @@ namespace AnimeWeb.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ChapterModel>> createCapitulo([FromBody] ChapterModel chapter)
+        public async Task<ActionResult<CreateChapterDto>> createCapitulo([FromBody] CreateChapterDto chapterDto)
         {
-            if (chapter == null)
+            if (chapterDto== null)
             {
                 return BadRequest();
             }
 
-            var newCapitulo = await _chapterService.createChapter(chapter);
+            var newCapitulo = await _chapterService.createChapter(chapterDto);
 
             return Created(string.Empty, newCapitulo);
         }
@@ -43,17 +44,17 @@ namespace AnimeWeb.Controllers
         [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ChapterModel>> updateCapitulo(int id, [FromBody] ChapterModel chapter)
+        public async Task<ActionResult<UpdateChapterDto>> updateCapitulo(int id, [FromBody] UpdateChapterDto chapterDto)
         {
 
-            if (id != chapter.id)
+            if (id != chapterDto.id)
             {
                 return BadRequest();
             }
 
-            var updateCapitulo = await _chapterService.updateChapter(id, chapter);
+            var chapter = await _chapterService.updateChapter(id, chapterDto);
 
-            return Ok(updateCapitulo);
+            return Ok(chapter);
         }
 
         [HttpGet]

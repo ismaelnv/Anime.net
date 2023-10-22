@@ -1,15 +1,19 @@
 using AnimeWeb.Models;
+using AnimeWeb.Models.Dto;
 using AnimeWeb.Repository.IRepository;
+
 
 namespace AnimeWeb.Service
 {
     public class ChapterService
     {
         private readonly IChapterRepository _chapterRepository;
+        private readonly IAnimeRepository _animeRepository;
 
-        public ChapterService(IChapterRepository chapterRepository)
+        public ChapterService(IChapterRepository chapterRepository,IAnimeRepository animeRepository)
         {
             _chapterRepository = chapterRepository;
+            _animeRepository = animeRepository;
         }
 
         public async Task<IEnumerable<ChapterModel>> getChapters()
@@ -23,37 +27,57 @@ namespace AnimeWeb.Service
                 return null;
             }
 
-            var capitulo = await _chapterRepository.Obtain(C => C.id == id);
+            ChapterModel capitulo = await _chapterRepository.Obtain(C => C.id == id);
             return capitulo;
         }
 
-        public async Task<ChapterModel> createChapter(ChapterModel chapterModel)
+        public async Task<CreateChapterDto> createChapter(CreateChapterDto chapterDto)
         {
-            if(chapterModel == null)
+            if(chapterDto == null)
             {
                 return null;
             }
 
-            await _chapterRepository.Create(chapterModel);
-            return chapterModel;
+            ChapterModel chapter = new()
+            {
+                title = chapterDto.title,
+                episode = chapterDto.episode,
+                description = chapterDto.description,
+                animeId = chapterDto.animeId,
+                state = chapterDto.state,
+                AnimeModel = await _animeRepository.Obtain(A => A.Id == chapterDto.animeId)
+            };
+
+            await _chapterRepository.Create(chapter);
+            return chapterDto;
         } 
 
         public async Task<ChapterModel> removeChapter(int id)
         {
-            var capitulo = await this.getChapterId(id);
+            ChapterModel capitulo = await this.getChapterId(id);
             await _chapterRepository.Remove(capitulo);
             return capitulo;
         }
 
-        public async Task<ChapterModel> updateChapter(int id, ChapterModel chapterModel)
+        public async Task<UpdateChapterDto> updateChapter(int id, UpdateChapterDto chapterDto)
         {
-            if (chapterModel.id != id || chapterModel == null)
+            if (chapterDto.id != id || chapterDto == null)
             {
                 return null;
             }
 
-            var capitulo = await _chapterRepository.Update(chapterModel);
-            return capitulo;
+            ChapterModel chapter = new()
+            {
+                id = chapterDto.id,
+                title = chapterDto.title,
+                episode = chapterDto.episode,
+                description = chapterDto.description,
+                animeId = chapterDto.animeId,
+                state = chapterDto.state
+            };
+
+            await _chapterRepository.Update(chapter);
+            return chapterDto;
         }
 
     }

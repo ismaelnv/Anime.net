@@ -1,6 +1,5 @@
 using AnimeWeb.Data;
 using AnimeWeb.Models;
-using AnimeWeb.Models.Dto;
 using AnimeWeb.Repository.IRepository;
 
 namespace AnimeWeb.Repository

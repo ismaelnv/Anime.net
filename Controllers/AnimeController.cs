@@ -11,13 +11,11 @@ namespace AnimeWeb.Controllers
     {
         private readonly ILogger<AnimeController> _logger;
         private AnimeService _animeService;
-        private ChapterService _chapterService;
 
-        public AnimeController(ILogger<AnimeController> logger, AnimeService animeService,ChapterService chapterService)
+        public AnimeController(ILogger<AnimeController> logger, AnimeService animeService)
         {
             _logger = logger;
             _animeService = animeService;
-            _chapterService = chapterService;
         }
 
         [HttpGet]
@@ -30,14 +28,14 @@ namespace AnimeWeb.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<AnimeModel>> createAnime(AnimeModel anime)
+        public async Task<ActionResult<CreateAnimeDto>> createAnime(CreateAnimeDto animeDto)
         {
-            if (anime == null)
+            if (animeDto == null)
             {
                 return BadRequest();
             }
 
-            var newAnime = await _animeService.createAnime(anime);
+            var newAnime = await _animeService.createAnime(animeDto);
 
             return Created(string.Empty, newAnime);
         }
@@ -45,17 +43,16 @@ namespace AnimeWeb.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<AnimeModel>> updateAnime(int id, [FromBody] AnimeModel anime)
+        public async Task<ActionResult<UpdateAnimeDto>> updateAnime(int id, [FromBody] UpdateAnimeDto animeDto)
         {
 
-            if (id != anime.Id)
+            if ( animeDto == null || id == 0)
             {
                 return BadRequest();
             }
 
-            var updatedAnime = await _animeService.updateAnime(id, anime);
-
-            return Ok(updatedAnime);
+            var anime = await _animeService.updateAnime(id, animeDto);
+            return Ok(anime);
         }
 
         [HttpGet("{id}")]
@@ -117,29 +114,19 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<AnimeModel>> createAChapterAndRelateItToAnime(int id,[FromBody] ChapterDto chapterDto)
+        public async Task<ActionResult<AnimeModel>> createAChapterAndRelateItToAnime(int id,[FromBody] CreateChapterDto chapterDto)
         { 
             if (id == 0 || chapterDto == null)
             {
                 return BadRequest();
             }
 
-            var anime = await _animeService.getAnimeId(id);
+            AnimeModel anime = await _animeService.createAChapterAndRelateItToAnime(id,chapterDto);
 
             if (anime == null)
             {
                 return NotFound();
             }
-
-            ChapterModel chapter = new (){
-
-                title = chapterDto.title,
-                episode = chapterDto.episode,
-                description = chapterDto.description,
-                AnimeModel = anime 
-            };
-            
-            await _chapterService.createChapter(chapter);
 
             return Created(string.Empty,anime);
         }
