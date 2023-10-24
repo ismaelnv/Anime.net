@@ -1,6 +1,7 @@
 using AnimeWeb.Models;
 using AnimeWeb.Models.Dto;
 using AnimeWeb.Repository.IRepository;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimeWeb.Service
@@ -9,76 +10,94 @@ namespace AnimeWeb.Service
     {
         private IAnimeRepository _animeRepository;
         private IChapterRepository _chapterRepository;
+        private IMapper _mapper;
 
-        public AnimeService(IAnimeRepository animeRepository, IChapterRepository chapterRepository)
+        public AnimeService(IAnimeRepository animeRepository, IChapterRepository chapterRepository, IMapper mapper)
         {
             _animeRepository = animeRepository;
             _chapterRepository = chapterRepository;
+            _mapper = mapper;
         }
         
-        public async Task<IEnumerable<AnimeModel>> getAnimes(){
-            return await _animeRepository.GetAll();
+        public async Task<IEnumerable<AnimeDto>> getAnimes(){
+
+            IEnumerable<AnimeModel> animeList = await _animeRepository.GetAllAsync();
+            IEnumerable<AnimeDto> animes = _mapper.Map<IEnumerable<AnimeDto>>(animeList);
+            return animes;
         }
 
-        public async Task<CreateAnimeDto> createAnime(CreateAnimeDto animeDto){
+        public async Task<AnimeDto> createAnime(CreateAnimeDto createAnimeDto){
             
-            if (animeDto == null){
+            if (createAnimeDto == null){
+                return null;
+                //throw new Exception("Anime no encontrado");
+            }
 
+           AnimeModel anime = _mapper.Map<AnimeModel>(createAnimeDto);
+
+           await _animeRepository.CreateAsync(anime);
+
+           AnimeDto animeDto1 = _mapper.Map<AnimeDto>(anime);
+           return animeDto1;
+        }
+
+        public async Task<AnimeDto> updateAnime(int id, [FromBody] UpdateAnimeDto updateAnimeDto){
+
+            if (id != updateAnimeDto.Id)
+            {
                 return null;
             }
 
-            AnimeModel anime = new()
-            {
-                name = animeDto.name,
-                state = animeDto.state,
-                description = animeDto.description
-            };
+            AnimeModel anime = _mapper.Map<AnimeModel>(updateAnimeDto);
 
-            await _animeRepository.Create(anime);
-            return animeDto;
-        }
+            AnimeModel animeModel = await _animeRepository.UpdateAsync(anime);
 
-        public async Task<UpdateAnimeDto> updateAnime(int id, [FromBody] UpdateAnimeDto animeDto){
-
-            if (id != animeDto.Id)
+            if (animeModel == null)
             {
                 return null;
             }
 
-            AnimeModel anime = new()
-            {
-                Id = animeDto.Id,
-                name = animeDto.name,
-                state = animeDto.state,
-                description = animeDto.description
-            };
+            AnimeDto animeDto = _mapper.Map<AnimeDto>(animeModel);
 
-            await _animeRepository.Update(anime);
             return animeDto;
         }
 
-        public async Task<AnimeModel> getAnimeId(int id){
-
-            AnimeModel anime = await _animeRepository.Obtain(A => A.Id == id);   
-            return anime;
-        }
-
-        public async Task<AnimeModel> removeAnime(int id){
+        public async Task<AnimeDto> getAnimeId(int id){
 
             if (id == 0)
             {
                 return null;
             }
 
-            AnimeModel anime = await _animeRepository.Obtain(A => A.Id == id);
+            AnimeModel anime = await _animeRepository.ObtainAsync(A => A.Id == id); 
 
             if (anime == null)
             {
                 return null;
             }
 
-            await _animeRepository.Remove(anime);
-            return anime;
+            AnimeDto animeDto = _mapper.Map<AnimeDto>(anime);
+            return animeDto ;
+        }
+
+        public async Task<AnimeDto> removeAnime(int id){
+
+            if (id == 0)
+            {
+                return null;
+            }
+
+            AnimeModel anime = await _animeRepository.ObtainAsync(A => A.Id == id);
+
+            if (anime == null)
+            {
+                return null;
+            }
+
+            await _animeRepository.RemoveAsync(anime);
+            
+            AnimeDto animeDto = _mapper.Map<AnimeDto>(anime);
+            return animeDto;
         }
 
         public async Task<AnimeModel> getAnimeChapters(int id){
@@ -88,7 +107,7 @@ namespace AnimeWeb.Service
                 return null;
             }
 
-            AnimeModel anime = await _animeRepository.getanimeChapters(id);
+            AnimeModel anime = await _animeRepository.getanimeChaptersAsync(id);
             return anime;
         }
 
@@ -99,7 +118,7 @@ namespace AnimeWeb.Service
                 return null;
             }
 
-            AnimeModel anime = await this.getAnimeId(id);
+            AnimeModel anime = await _animeRepository.ObtainAsync(A => A.Id == id);
 
             if (anime == null)
             {
@@ -114,7 +133,7 @@ namespace AnimeWeb.Service
                 AnimeModel = anime 
             };
 
-            await _chapterRepository.Create(chapter);
+            await _chapterRepository.CreateAsync(chapter);
 
             return anime;
         }

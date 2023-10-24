@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using AnimeWeb.Data;
+using AnimeWeb.Mapper;
 using AnimeWeb.Repository;
 using AnimeWeb.Repository.IRepository;
 using AnimeWeb.Service;
@@ -19,10 +20,15 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 //Repository
 builder.Services.AddScoped<IAnimeRepository,AnimeRepository>();
 builder.Services.AddScoped<IChapterRepository,ChapterRepository>();
+builder.Services.AddScoped<IVideoRepository,VideoRepository>();
 
 //Service
 builder.Services.AddScoped<AnimeService>();
 builder.Services.AddScoped<ChapterService>();
+builder.Services.AddScoped<VideoService>();
+
+//Mapeo de entidades y dto
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

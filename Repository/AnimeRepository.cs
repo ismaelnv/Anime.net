@@ -1,6 +1,7 @@
 
 using AnimeWeb.Data;
 using AnimeWeb.Models;
+using AnimeWeb.Models.Dto;
 using AnimeWeb.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,18 +16,32 @@ namespace AnimeWeb.Repository
             _db = db;
         }
 
-        public async Task<AnimeModel> getanimeChapters(int id)
+        public async Task<AnimeModel> getanimeChaptersAsync(int id)
         {
             AnimeModel anime = await _db.Anime.Where(A => A.Id == id).Include(A => A.chapters).FirstAsync();
             return anime;
         }
 
-        public async Task<AnimeModel> Update(AnimeModel entidad)
+        public async Task<AnimeModel> UpdateAsync(AnimeModel entidad)
         {
             entidad.updateDate = DateTime.Now;
             _db.Update(entidad);
             await _db.SaveChangesAsync();
             return entidad;
         }
+
+        public async Task<List<AnimeDto>> GetAllAnimeDtoAsync()
+        {
+            var animeDto = await _db.Anime
+            .Select(anime => new AnimeDto
+            {
+                Id = anime.Id,
+                name = anime.name,
+                state = anime.state
+                
+            })
+            .ToListAsync();
+            return animeDto;
+        } 
     }
 }

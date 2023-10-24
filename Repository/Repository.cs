@@ -16,19 +16,18 @@ namespace AnimeWeb.Repository
             this.dbSet = _db.Set<T>();
         }
 
-        public async Task Create(T entidad)
+        public async Task CreateAsync(T entidad)
         {
             await dbSet.AddAsync(entidad);
-            await Engrave();
-            
+            await EngraveAsync();
         }
 
-        public async Task Engrave()
+        public async Task EngraveAsync()
         {
             await _db.SaveChangesAsync();
         }
 
-        public async Task<T> Obtain(Expression<Func<T, bool>> filtro = null, bool tracked = true)
+        public async Task<T> ObtainAsync(Expression<Func<T, bool>> filtro = null, bool tracked = true)
         {
             IQueryable<T> query = dbSet;
             
@@ -43,7 +42,7 @@ namespace AnimeWeb.Repository
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<List<T>> GetAll(Expression<Func<T, bool>>? filtro = null)
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filtro = null)
         {
             IQueryable<T> query = dbSet;
             
@@ -54,10 +53,10 @@ namespace AnimeWeb.Repository
             return await query.ToListAsync();
         }
 
-        public async Task Remove(T entidad)
+        public async Task RemoveAsync(T entidad)
         {
            dbSet.Remove(entidad);
-           await Engrave();
+           await EngraveAsync();
         }
     }
 }

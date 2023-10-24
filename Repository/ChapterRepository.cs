@@ -1,6 +1,7 @@
 using AnimeWeb.Data;
 using AnimeWeb.Models;
 using AnimeWeb.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace AnimeWeb.Repository
 {
@@ -12,8 +13,14 @@ namespace AnimeWeb.Repository
         {
             _db = db;
         }
-        
-        public async Task<ChapterModel> Update(ChapterModel entidad)
+
+        public async Task<ChapterModel> getChapterVideosAsync(int id)
+        {
+           ChapterModel chapter = await _db.Capitulo.Where(c => c.id == id).Include(c => c.videos).FirstAsync();
+           return chapter;
+        }
+
+        public async Task<ChapterModel> UpdateAsync(ChapterModel entidad)
         {
             entidad.updateDate = DateTime.Now;
             _db.Update(entidad);

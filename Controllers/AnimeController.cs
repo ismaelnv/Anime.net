@@ -28,7 +28,7 @@ namespace AnimeWeb.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CreateAnimeDto>> createAnime(CreateAnimeDto animeDto)
+        public async Task<ActionResult<AnimeDto>> createAnime(CreateAnimeDto animeDto)
         {
             if (animeDto == null)
             {
@@ -43,15 +43,15 @@ namespace AnimeWeb.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<UpdateAnimeDto>> updateAnime(int id, [FromBody] UpdateAnimeDto animeDto)
+        public async Task<ActionResult<AnimeDto>> updateAnime(int id, [FromBody] UpdateAnimeDto updateAnimeDto)
         {
 
-            if ( animeDto == null || id == 0)
+            if ( updateAnimeDto == null || id == 0)
             {
                 return BadRequest();
             }
 
-            var anime = await _animeService.updateAnime(id, animeDto);
+            AnimeDto anime = await _animeService.updateAnime(id, updateAnimeDto);
             return Ok(anime);
         }
 
@@ -78,14 +78,14 @@ namespace AnimeWeb.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<AnimeModel>> removeAnime(int id)
+        public async Task<ActionResult<AnimeDto>> removeAnime(int id)
         {
             if (id == 0)
             {
                 return BadRequest();
             }    
 
-            var anime = await _animeService.removeAnime(id);
+            AnimeDto anime = await _animeService.removeAnime(id);
             return Ok(anime) ;
         }
 

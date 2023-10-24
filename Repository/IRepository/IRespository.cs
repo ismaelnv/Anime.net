@@ -4,15 +4,14 @@ namespace AnimeWeb.Repository.IRepository
 {
     public interface IRespository<T> where T : class
     {
-        Task Create(T entidad);
+        Task CreateAsync(T entidad);
 
-        Task<List<T>> GetAll(Expression<Func<T,bool>>? filtro = null);
+        Task<List<T>> GetAllAsync(Expression<Func<T,bool>>? filtro = null);
 
-        Task<T> Obtain(Expression<Func<T,bool>> filtro = null, bool tracked = true);
+        Task<T> ObtainAsync(Expression<Func<T,bool>> filtro = null, bool tracked = true);
 
-        Task Remove(T entidad);
+        Task RemoveAsync(T entidad);
 
-        Task Engrave();
-        
+        Task EngraveAsync(); 
     }
 }

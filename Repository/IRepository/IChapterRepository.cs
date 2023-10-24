@@ -5,6 +5,7 @@ namespace AnimeWeb.Repository.IRepository
 {
     public interface IChapterRepository : IRespository<ChapterModel>
     {
-        Task<ChapterModel> Update(ChapterModel entidad);
+        Task<ChapterModel> UpdateAsync(ChapterModel entidad);
+        Task<ChapterModel> getChapterVideosAsync(int id);
     }
 }
