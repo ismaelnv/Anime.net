@@ -1,43 +1,56 @@
 using AnimeWeb.Models;
 using AnimeWeb.Models.Dto;
-using AnimeWeb.Service;
+using AnimeWeb.Service.Interface;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimeWeb.Controllers
-{   
+{
     [ApiController]
     [Route("/api/chapters")]
     public class ChapterController : Controller
     {
-        private readonly ILogger<ChapterController> _logger;
-        private ChapterService _chapterService;
 
-        public ChapterController(ILogger<ChapterController> logger, ChapterService chapterService)
+        private readonly ILogger<ChapterController> _logger;
+        private IChapterService _chapterService;
+        private IVideoService _videoService;
+        private IMapper _mapper;
+
+        public ChapterController(ILogger<ChapterController> logger, IChapterService chapterService, IMapper mapper,IVideoService videoService)
         {
+            
             _logger = logger;
             _chapterService = chapterService;
+            _mapper = mapper;
+            _videoService = videoService;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<ChapterDto>>> getChapters()
         {
+
             return Ok(await _chapterService.getChapters());
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ChapterDto>> createChapter([FromBody] CreateChapterDto chapterDto)
+        public async Task<ActionResult<ChapterDto>> createChapter([FromBody] CreateChapterDto createChapterDto)
         {
-            if (chapterDto== null)
+            try
             {
-                return BadRequest();
+
+                ChapterModel? Chapter = await _chapterService.createChapter(createChapterDto);
+                ChapterDto chapterDto = _mapper.Map<ChapterDto>(Chapter);
+
+                return Created(string.Empty, chapterDto);
             }
+            catch(Exception ex)
+            {
 
-            ChapterDto newChapter = await _chapterService.createChapter(chapterDto);
-
-            return Created(string.Empty, newChapter);
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]
@@ -47,20 +60,26 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ChapterDto>> updateChapter(int id, [FromBody] UpdateChapterDto updateChapterDto)
         {
-
-            if (id != updateChapterDto.id)
+            try
             {
-                return BadRequest();
+
+                ChapterModel? chapter = await _chapterService.updateChapter(id, updateChapterDto);
+
+                if (chapter == null)
+                {
+                    return NotFound("The chapter you want to update could not be found");
+                }
+
+                ChapterDto chapterDto = _mapper.Map<ChapterDto>(chapter);
+                return Ok(chapterDto);
+            }
+            catch(Exception ex)
+            {
+
+                return BadRequest(ex.Message);
             }
 
-            ChapterDto chapter = await _chapterService.updateChapter(id, updateChapterDto);
-
-            if ( chapter == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(chapter);
+      
         }
 
         [HttpGet]
@@ -70,19 +89,25 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ChapterDto>> getChapterId(int id)
         {
-            if (id == 0)
+            try
             {
-                return BadRequest();
+
+                ChapterModel? chapter = await _chapterService.getChapterId(id);
+
+                if (chapter == null)
+                {
+                    return NotFound("Chapter not found");
+                }
+
+                ChapterDto chapterDto = _mapper.Map<ChapterDto>(chapter);
+
+                return Ok(chapterDto);
             }
-
-            ChapterDto capitulo = await _chapterService.getChapterId(id);
-
-            if (capitulo == null)
+            catch (Exception ex)
             {
-                return NotFound();
-            }
 
-            return Ok(capitulo);
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete]
@@ -91,13 +116,24 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ChapterDto>> removeChapter(int id)
         {
-            if (id == 0)
+            try
             {
-                return BadRequest();
-            }    
 
-            ChapterDto chapter = await _chapterService.removeChapter(id);
-            return Ok(chapter);
+                ChapterModel? chapter = await _chapterService.removeChapter(id);
+
+                if (chapter == null)
+                {
+                    return NotFound("Could not find the chapter you want to delete");
+                }
+                
+                ChapterDto chapterDto = _mapper.Map<ChapterDto>(chapter);
+                return Ok(chapterDto);
+            }
+            catch(Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}/videos")]
@@ -106,36 +142,70 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ChapterModel>> getChapterVideos(int id)
         {
-            if (id == 0)
+            try
             {
-                return BadRequest();
+                
+                ChapterModel? chapter = await _chapterService.getChapterVideos(id);
+
+                if (chapter == null)
+                {
+                    return NotFound("The chapter you want to update was not found");
+                }
+
+                return Ok(chapter);
             }
-
-            ChapterModel chapter = await _chapterService.getChapterCapitulos(id);
-
-            if ( chapter == null )
+            catch (Exception ex)
             {
-                return  NotFound();
-            }
 
-            return Ok(chapter);
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("{id}/videos")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ChapterModel>> createAVideoAndRelateItToChapter(int id, [FromBody] CreateVideoDto videoDto)
-        { 
-            if (id == 0 || videoDto == null)
+        public async Task<ActionResult<ChapterModel>> createAVideoAndRelateItToChapter(int id, [FromBody] CreateVideoDto createVideoDto)
+        {
+            try
             {
-                return BadRequest();
+
+                if (id == 0)
+                {
+                    throw new BadHttpRequestException("Invalid Id");
+                }
+
+                if (createVideoDto == null)
+                {
+                    throw new BadHttpRequestException("Invalid video");
+                }
+
+                ChapterModel? chapter = await _chapterService.getChapterId(id);
+
+                if (chapter == null)
+                {
+                    return NotFound("The chapter was not found");
+                }  
+
+                VideoModel videoModel = _mapper.Map<VideoModel>(createVideoDto);
+                videoModel.ChapterModel = chapter;
+
+                CreateVideoDto createVideo = _mapper.Map<CreateVideoDto>(videoModel);
+
+                VideoModel? video  = await _videoService.CreateVideo(createVideo);
+
+                if (video == null)
+                {
+                    return NotFound("Error creating video");
+                }
+                
+                return chapter;
             }
+            catch (Exception ex)
+            {
 
-            ChapterModel chapter = await _chapterService.createVideoAndRelateItToChapter(id,videoDto);
-
-            return Created(string.Empty,chapter);
+                return BadRequest(ex.Message);
+            }
         }
-
     }
 }

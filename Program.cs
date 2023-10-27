@@ -4,6 +4,7 @@ using AnimeWeb.Mapper;
 using AnimeWeb.Repository;
 using AnimeWeb.Repository.IRepository;
 using AnimeWeb.Service;
+using AnimeWeb.Service.Interface;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,9 +24,9 @@ builder.Services.AddScoped<IChapterRepository,ChapterRepository>();
 builder.Services.AddScoped<IVideoRepository,VideoRepository>();
 
 //Service
-builder.Services.AddScoped<AnimeService>();
-builder.Services.AddScoped<ChapterService>();
-builder.Services.AddScoped<VideoService>();
+builder.Services.AddScoped<IAnimeService,AnimeService>();
+builder.Services.AddScoped<IChapterService,ChapterService>();
+builder.Services.AddScoped<IVideoService,VideoService>();
 
 //Mapeo de entidades y dto
 builder.Services.AddAutoMapper(typeof(MappingConfig));

@@ -1,39 +1,41 @@
 using AnimeWeb.Models;
 using AnimeWeb.Models.Dto;
 using AnimeWeb.Repository.IRepository;
+using AnimeWeb.Service.Interface;
 using AutoMapper;
 
 namespace AnimeWeb.Service
 {
-    public class ChapterService
+    public class ChapterService : IChapterService
     {
+
         private IChapterRepository _chapterRepository;
-        private IAnimeRepository _animeRepository;
-        private IVideoRepository _videoRepository;
-        private AnimeService _animeService;
+        private IAnimeService _animeService;
         private IMapper _mapper;
 
-        public ChapterService(IChapterRepository chapterRepository,IAnimeRepository animeRepository,
-            IVideoRepository videoRepository, IMapper mapper, AnimeService animeService)
+        public ChapterService(IChapterRepository chapterRepository, IMapper mapper, IAnimeService animeService)
         {
+
             _chapterRepository = chapterRepository;
-            _animeRepository = animeRepository;
-            _videoRepository = videoRepository;
             _mapper = mapper;
             _animeService = animeService;
         }
 
         public async Task<IEnumerable<ChapterDto>> getChapters()
         {
+
             IEnumerable<ChapterModel> chapterModeList = await _chapterRepository.GetAllAsync();
             IEnumerable<ChapterDto> chapterDtoList = _mapper.Map<IEnumerable<ChapterDto>>(chapterModeList);
             return chapterDtoList;
         }
 
-        public async Task<ChapterDto> getChapterId(int id)
+        public async Task<ChapterModel?> getChapterId(int id)
         {
-            if(id == 0){
-                return null;
+
+            if (id == 0)
+            {
+
+                throw new BadHttpRequestException("Invalid Id");
             }
 
             ChapterModel chapter = await _chapterRepository.ObtainAsync(C => C.id == id);
@@ -43,41 +45,42 @@ namespace AnimeWeb.Service
                 return null;
             }
 
-            ChapterDto chapterDto = _mapper.Map<ChapterDto>(chapter);
-            return chapterDto;
+            return chapter;
         }
 
-        public async Task<ChapterDto> createChapter(CreateChapterDto createChapterDto)
+        public async Task<ChapterModel?> createChapter(CreateChapterDto createChapterDto)
         {
-            if(createChapterDto == null)
+
+            if (createChapterDto == null)
+            {
+                throw new BadHttpRequestException("Invalid chapter");
+            }
+
+            AnimeModel? animeModel = await _animeService.getAnimeId(createChapterDto.animeId);
+
+            if (animeModel == null)
             {
                 return null;
             }
 
             ChapterModel chapter = _mapper.Map<ChapterModel>(createChapterDto);
-            chapter.AnimeModel = await _animeRepository.ObtainAsync(a => a.Id == chapter.animeId);
-
-            if (chapter.AnimeModel == null)
-            {
-                return null;
-            }
+            chapter.AnimeModel = animeModel;
+            chapter.uploadDate = DateTime.Now;
+            chapter.updateDate = DateTime.Now;
 
             await _chapterRepository.CreateAsync(chapter);
+            return chapter;
+        }
 
-            ChapterDto chapterDto = _mapper.Map<ChapterDto>(chapter);
-
-            return chapterDto;
-        } 
-
-        public async Task<ChapterDto> removeChapter(int id)
+        public async Task<ChapterModel?> removeChapter(int id)
         {
+
             if (id == 0)
             {
-                return null;
+                throw new BadHttpRequestException("Invalid Id");
             }
 
-            ChapterModel chapterModel = await _chapterRepository.ObtainAsync(c => c.id == id);
-            Console.WriteLine(chapterModel);
+            ChapterModel? chapterModel = await this.getChapterId(id);
 
             if (chapterModel == null)
             {
@@ -85,69 +88,50 @@ namespace AnimeWeb.Service
             }
 
             await _chapterRepository.RemoveAsync(chapterModel);
-          
-            ChapterDto chapterDto = _mapper.Map<ChapterDto>(chapterModel);
-            return chapterDto;
+
+            return chapterModel;
         }
 
-        public async Task<ChapterDto> updateChapter(int id, UpdateChapterDto updateChapterDto)
+        public async Task<ChapterModel?> updateChapter(int id, UpdateChapterDto updateChapterDto)
         {
-            if (updateChapterDto.id != id || updateChapterDto == null)
+
+            if (updateChapterDto.id != id)
             {
-                return null;
+                throw new BadHttpRequestException("The id you want to update must match the chapter id");
+            }
+
+            if (updateChapterDto == null)
+            {
+                throw new BadHttpRequestException("Invalid chapter");
             }
 
             ChapterModel chapterModel = _mapper.Map<ChapterModel>(updateChapterDto);
-          
             ChapterModel chapter = await _chapterRepository.UpdateAsync(chapterModel);
-            
+
+            if (chapter == null)
+            {
+                return null;
+            }
+
+            return chapter;
+        }
+
+        public async Task<ChapterModel?> getChapterVideos(int id)
+        {
+
+            if (id == 0)
+            {
+                throw new BadHttpRequestException("Invalid Id");
+            }
+
+            ChapterModel? chapter = await _chapterRepository.getChapterVideosAsync(id);
+
             if (chapter == null)
             {
                 return null;
             }
 
-            ChapterDto chapterDto = _mapper.Map<ChapterDto>(chapter);
-            return chapterDto;
-        }
-
-        public async Task<ChapterModel> getChapterCapitulos(int id)
-        {
-            if ( id == 0)
-            {
-                return null;
-            }
-
-            ChapterModel chapter = await _chapterRepository.getChapterVideosAsync(id);
-            
-            if(chapter == null )
-            {
-                return null;
-            }
-            
             return chapter;
         }
-
-        public async Task<ChapterModel> createVideoAndRelateItToChapter(int id, CreateVideoDto videoDto)
-        {
-            
-            if (id == 0 || videoDto == null)
-            {
-                return null;
-            }
-
-            ChapterModel chapter = await _chapterRepository.ObtainAsync(c => c.id == id);
-
-            if (chapter == null)
-            {
-                return null;
-            }    
-
-            VideoModel videoModel = _mapper.Map<VideoModel>(videoDto);
-            videoModel.ChapterModel = chapter;
-
-            await _videoRepository.CreateAsync(videoModel);
-
-            return chapter;
-        } 
     }
 }

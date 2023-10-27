@@ -10,13 +10,16 @@ namespace AnimeWeb.Repository
 
         public VideoRepository(DataContext db) : base(db)
         { 
+
             _db = db;
         }
 
         public async Task<VideoModel> UpdateAsync(VideoModel entidad)
         {
+
             entidad.updateDate = DateTime.Now;
             _db.Update(entidad);
+            
             await _db.SaveChangesAsync();
             return entidad;
         }

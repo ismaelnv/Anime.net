@@ -3,6 +3,7 @@ namespace AnimeWeb.Models
 {
     public class VideoModel
     {
+        
         public int id { get; set; }
         public string url { get; set; } = string.Empty;
         public DateTime uploadDate { get; set; }

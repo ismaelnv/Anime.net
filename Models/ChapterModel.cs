@@ -3,6 +3,7 @@ namespace AnimeWeb.Models
 {
     public class ChapterModel
     {
+
         public int id { get; set; }
         public string title { get; set; } = string.Empty;
         public int episode { get; set; }

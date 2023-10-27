@@ -17,6 +17,7 @@ namespace AnimeWeb.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            
             //Relacion de muchos a uno de los modelos AnimeModel y ChapterModel
             modelBuilder.Entity<AnimeModel>()
             .HasMany(a => a.chapters)

@@ -1,5 +1,7 @@
+using AnimeWeb.Models;
 using AnimeWeb.Models.Dto;
-using AnimeWeb.Service;
+using AnimeWeb.Service.Interface;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimeWeb.Controllers
@@ -8,13 +10,17 @@ namespace AnimeWeb.Controllers
     [Route("[controller]")]
     public class VideoController : Controller
     {
-        private readonly ILogger<VideoController> _logger;
-        private readonly VideoService _videoService;
 
-        public VideoController(ILogger<VideoController> logger, VideoService videoService)
+        private readonly ILogger<VideoController> _logger;
+        private IVideoService _videoService;
+        private IMapper _mapper;
+
+        public VideoController(ILogger<VideoController> logger, IVideoService videoService, IMapper mapper)
         {
+            
             _logger = logger;
             _videoService = videoService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -29,13 +35,18 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<VideoDto>> createVideo([FromBody] CreateVideoDto createVideoDto)
         {
-            if (createVideoDto== null)
+            try
             {
-                return BadRequest();
-            }
 
-            VideoDto video = await _videoService.CreateVideo(createVideoDto);
-            return Created(string.Empty, video);
+                VideoModel? video = await _videoService.CreateVideo(createVideoDto);
+                VideoDto videoDto = _mapper.Map<VideoDto>(video);
+                return Created(string.Empty, videoDto);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut]
@@ -45,20 +56,19 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<VideoDto>> updateVideo(int id, [FromBody] UpdateVideoDto updateVideoDto)
         {
-
-            if (id != updateVideoDto.id)
+            try
             {
-                return BadRequest();
+
+                VideoModel? video = await _videoService.updateVideo(id, updateVideoDto);
+                VideoDto videoDto = _mapper.Map<VideoDto>(video);
+
+                return Ok(videoDto);
             }
-
-            VideoDto video = await _videoService.updateVideo(id,updateVideoDto);
-
-            if (video == null)
+            catch (Exception ex)
             {
-                return NotFound();
-            }
 
-            return Ok(video);
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
@@ -68,19 +78,25 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<VideoDto>> getVideoId(int id)
         {
-            if (id == 0)
+            try
             {
-                return BadRequest();
+
+                VideoModel? video = await _videoService.getVideoId(id);
+
+                if (video == null)
+                {
+                    return NotFound("Video not found");
+                }
+
+                return Ok(video);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
             }
 
-            VideoDto video = await _videoService.getVideoId(id);
 
-            if (video == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(video);
         }
 
         [HttpDelete]
@@ -89,13 +105,24 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<VideoDto>> removeVideo(int id)
         {
-            if (id == 0)
+            try
             {
-                return BadRequest();
-            }    
 
-            VideoDto video = await _videoService.removeVideo(id);
-            return Ok(video);
+                VideoModel? video = await _videoService.removeVideo(id);
+
+                if (video == null)
+                {
+                    return NotFound("The video you want to delete was not found");
+                }
+
+                VideoDto videoDto = _mapper.Map<VideoDto>(video);
+                return Ok(videoDto);
+            }
+            catch(Exception ex)
+            {
+                
+                return BadRequest(ex.Message);
+            }
         }
 
     }

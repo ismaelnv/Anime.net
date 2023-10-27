@@ -3,6 +3,7 @@ namespace AnimeWeb.Models.Dto
 {
     public class UpdateChapterDto
     {
+        
         public int id { get; set; }
         public string title { get; set; } = string.Empty;
         public int episode { get; set; }
