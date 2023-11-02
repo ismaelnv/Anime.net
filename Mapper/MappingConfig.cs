@@ -20,6 +20,10 @@ namespace AnimeWeb.Mapper
             CreateMap<VideoModel, VideoDto>().ReverseMap();
             CreateMap<VideoModel, CreateVideoDto>().ReverseMap();
             CreateMap<VideoModel, UpdateVideoDto>().ReverseMap();   
+
+            CreateMap<GenreModel, GenreDto>().ReverseMap();
+            CreateMap<GenreModel, CreateGenreDto>().ReverseMap();
+            CreateMap<GenreModel, updateGenreDto>().ReverseMap();
         }
         
     }

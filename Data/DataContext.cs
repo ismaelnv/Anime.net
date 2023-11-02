@@ -14,6 +14,7 @@ namespace AnimeWeb.Data
         public DbSet<AnimeModel> Anime { get; set; }
         public DbSet<ChapterModel> Capitulo { get; set; }
         public DbSet<VideoModel> Video { get; set; }
+        public DbSet<GenreModel> Genre { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +32,11 @@ namespace AnimeWeb.Data
             .WithOne(e => e.ChapterModel)
             .HasForeignKey(e => e.idChapter)
             .IsRequired();
+
+            //Relacion de muchos a muchos de las tablas Genre y Animes
+            modelBuilder.Entity<GenreModel>()
+            .HasMany(g => g.animes)
+            .WithMany(e => e.Genres);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

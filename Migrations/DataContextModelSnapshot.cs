@@ -17,6 +17,21 @@ namespace AnimeWeb.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.12");
 
+            modelBuilder.Entity("AnimeModelGenreModel", b =>
+                {
+                    b.Property<int>("Genresid")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("animesId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Genresid", "animesId");
+
+                    b.HasIndex("animesId");
+
+                    b.ToTable("AnimeModelGenreModel");
+                });
+
             modelBuilder.Entity("AnimeWeb.Models.AnimeModel", b =>
                 {
                     b.Property<int>("Id")
@@ -85,6 +100,30 @@ namespace AnimeWeb.Migrations
                     b.ToTable("Capitulo");
                 });
 
+            modelBuilder.Entity("AnimeWeb.Models.GenreModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("state")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("updateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("uploadDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Genre");
+                });
+
             modelBuilder.Entity("AnimeWeb.Models.VideoModel", b =>
                 {
                     b.Property<int>("id")
@@ -93,6 +132,10 @@ namespace AnimeWeb.Migrations
 
                     b.Property<int>("idChapter")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("language")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("state")
                         .HasColumnType("INTEGER");
@@ -112,6 +155,21 @@ namespace AnimeWeb.Migrations
                     b.HasIndex("idChapter");
 
                     b.ToTable("Video");
+                });
+
+            modelBuilder.Entity("AnimeModelGenreModel", b =>
+                {
+                    b.HasOne("AnimeWeb.Models.GenreModel", null)
+                        .WithMany()
+                        .HasForeignKey("Genresid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AnimeWeb.Models.AnimeModel", null)
+                        .WithMany()
+                        .HasForeignKey("animesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AnimeWeb.Models.ChapterModel", b =>

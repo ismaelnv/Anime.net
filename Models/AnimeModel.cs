@@ -12,5 +12,6 @@ namespace AnimeWeb.Models
       public string image { get; set; } = string.Empty;
       public bool state { get; set; }
       public virtual ICollection<ChapterModel> chapters { get; } = new List<ChapterModel>(); 
+      public virtual List<GenreModel> Genres { get; set; } = new();
     }
 }

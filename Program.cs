@@ -22,11 +22,14 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddScoped<IAnimeRepository,AnimeRepository>();
 builder.Services.AddScoped<IChapterRepository,ChapterRepository>();
 builder.Services.AddScoped<IVideoRepository,VideoRepository>();
+builder.Services.AddScoped<IGenreRepository,GenreRepository>();
+
 
 //Service
 builder.Services.AddScoped<IAnimeService,AnimeService>();
 builder.Services.AddScoped<IChapterService,ChapterService>();
 builder.Services.AddScoped<IVideoService,VideoService>();
+builder.Services.AddScoped<IGenreService,GenreService>();
 
 //Mapeo de entidades y dto
 builder.Services.AddAutoMapper(typeof(MappingConfig));

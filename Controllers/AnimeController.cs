@@ -1,6 +1,5 @@
 using AnimeWeb.Models;
 using AnimeWeb.Models.Dto;
-using AnimeWeb.Repository.IRepository;
 using AnimeWeb.Service;
 using AnimeWeb.Service.Interface;
 using AutoMapper;
@@ -42,7 +41,7 @@ namespace AnimeWeb.Controllers
             try
             {
 
-                AnimeModel animeModel = await _animeService.createAnime(createAnimeDto);
+                AnimeModel? animeModel = await _animeService.createAnime(createAnimeDto);
                 AnimeDto anime = _mapper.Map<AnimeDto>(animeModel);
 
                 return Created(string.Empty, anime);
@@ -183,5 +182,6 @@ namespace AnimeWeb.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
     }
 }

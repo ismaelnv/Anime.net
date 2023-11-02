@@ -8,5 +8,6 @@ namespace AnimeWeb.Models.Dto
         public string description { get; set; } = string.Empty;
         public bool state { get; set; } 
         public string image { get; set; } = string.Empty;
+        public virtual List<GenreModel> Genres { get; set; } = new();
     }
 }
