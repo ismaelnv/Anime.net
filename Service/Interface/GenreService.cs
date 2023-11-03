@@ -7,11 +7,11 @@ namespace AnimeWeb.Service.Interface
     public interface IGenreService
     {
 
-        Task<IEnumerable<GenreDto>> getCategories();
-        Task<GenreModel> createCategorie(CreateGenreDto createCategorieDto);
-        Task<GenreModel?> updateCategorie(int id, updateGenreDto updateCategorieDto);
-        Task<GenreModel?> getCategorieId(int id);
-        Task<GenreModel?> removeCategorie(int id);
+        Task<IEnumerable<GenreDto>> getGenres();
+        Task<GenreModel> createGenre(CreateGenreDto createCategorieDto);
+        Task<GenreModel?> updateGenre(int id, updateGenreDto updateCategorieDto);
+        Task<GenreModel?> getGenreId(int id);
+        Task<GenreModel?> removeGenre(int id);
         Task<GenreModel?> getGenreAnimes(int id);
     }
 }

@@ -12,14 +12,14 @@ namespace AnimeWeb.Service
         private IAnimeRepository _animeRepository;
         private IMapper _mapper;
 
-        private IGenreService _categorieServie;
+        private IGenreService _genreServie;
 
-        public AnimeService(IAnimeRepository animeRepository,IMapper mapper,IGenreService categorieService)
+        public AnimeService(IAnimeRepository animeRepository,IMapper mapper,IGenreService genreService)
         {
             
             _animeRepository = animeRepository;
             _mapper = mapper;
-            _categorieServie = categorieService;
+            _genreServie = genreService;
         }
 
         public async Task<IEnumerable<AnimeDto>> getAnimes()
@@ -37,13 +37,6 @@ namespace AnimeWeb.Service
             {
                 throw new BadHttpRequestException("Invalid anime");
             }
-
-            //CategorieModel? categorieModel = await _categorieServie.getCategorieId(createAnimeDto.idCategorie);
-
-            // if ( categorieModel == null)
-            // {
-            //     return null;
-            // }
 
             AnimeModel anime = _mapper.Map<AnimeModel>(createAnimeDto);
             anime.uploadDate = DateTime.Now;
@@ -129,6 +122,40 @@ namespace AnimeWeb.Service
             }
 
             return anime;
+        }
+
+        public async Task<AnimeModel?> relateAnimesAndGenres(int animeId,int genreId)
+        {
+
+            if ( genreId == 0)
+            {
+                throw new BadHttpRequestException("genereId invalid");
+            }
+
+            if ( animeId == 0)
+            {
+                throw new BadHttpRequestException("animeId invalid");
+            }
+
+            GenreModel? genreModel = await _genreServie.getGenreId(genreId);
+
+            if (genreModel == null)
+            {
+                return null;
+            }
+
+            AnimeModel? animeModel = await this.getAnimeId(animeId);
+
+            if (animeModel == null)
+            {
+                return null;
+            }
+
+            animeModel.Genres.Add(genreModel);
+
+            await _animeRepository.EngraveAsync();
+
+            return animeModel;
         }
     }
 }

@@ -9,34 +9,34 @@ namespace AnimeWeb.Service
     public class GenreService : IGenreService
     {
 
-        private readonly IGenreRepository _categorieRepository;
+        private readonly IGenreRepository _genreRepository;
         private readonly IMapper _mapper;
 
-        public GenreService(IGenreRepository categorieRepository,IMapper mapper)
+        public GenreService(IGenreRepository genreRepository,IMapper mapper)
         {
 
-            _categorieRepository = categorieRepository;
+            _genreRepository = genreRepository;
             _mapper = mapper;
         }  
 
-        public async Task<GenreModel> createCategorie(CreateGenreDto createCategorieDto)
+        public async Task<GenreModel> createGenre(CreateGenreDto createGenreDto)
         {
 
-            if (createCategorieDto == null)
+            if (createGenreDto == null)
             {
-                throw new BadHttpRequestException("Invalid categorie");
+                throw new BadHttpRequestException("Invalid genre");
             }
 
-            GenreModel categorie = _mapper.Map<GenreModel>(createCategorieDto);
-            categorie.uploadDate = DateTime.Now;
-            categorie.updateDate = DateTime.Now;
+            GenreModel genre = _mapper.Map<GenreModel>(createGenreDto);
+            genre.uploadDate = DateTime.Now;
+            genre.updateDate = DateTime.Now;
 
-            await _categorieRepository.CreateAsync(categorie);
+            await _genreRepository.CreateAsync(genre);
 
-            return categorie;
+            return genre;
         }
 
-        public async Task<GenreModel?> getCategorieId(int id)
+        public async Task<GenreModel?> getGenreId(int id)
         {
 
             if(id == 0)
@@ -44,25 +44,25 @@ namespace AnimeWeb.Service
                 throw new BadHttpRequestException("Invalid Id");
             }
 
-            GenreModel categorie = await _categorieRepository.ObtainAsync(v => v.id == id);
+            GenreModel genre = await _genreRepository.ObtainAsync(v => v.id == id);
 
-            if (categorie == null)
+            if (genre == null)
             {
                 return null;
             }
 
-            return categorie;
+            return genre;
         }
 
-        public async Task<IEnumerable<GenreDto>> getCategories()
+        public async Task<IEnumerable<GenreDto>> getGenres()
         {
 
-            IEnumerable<GenreModel> categorieModels = await _categorieRepository.GetAllAsync();
-            IEnumerable<GenreDto> categories = _mapper.Map<IEnumerable<GenreDto>>(categorieModels);
-            return categories;
+            IEnumerable<GenreModel> genresModel = await _genreRepository.GetAllAsync();
+            IEnumerable<GenreDto> genres = _mapper.Map<IEnumerable<GenreDto>>(genresModel);
+            return genres;
         }
 
-        public async Task<GenreModel?> removeCategorie(int id)
+        public async Task<GenreModel?> removeGenre(int id)
         {
             
             if (id == 0)
@@ -70,35 +70,35 @@ namespace AnimeWeb.Service
                 throw new BadHttpRequestException("Invalid Id");
             }
 
-            GenreModel? categorie = await this.getCategorieId(id);
+            GenreModel? genre = await this.getGenreId(id);
 
-            if (categorie == null)
+            if (genre == null)
             {
                 return null;
             }
 
-            await _categorieRepository.RemoveAsync(categorie);
+            await _genreRepository.RemoveAsync(genre);
             
-            return categorie;
+            return genre;
         }
 
-        public async Task<GenreModel?> updateCategorie(int id, updateGenreDto updateCategorieDto)
+        public async Task<GenreModel?> updateGenre(int id, updateGenreDto updateGenreDto)
         {
 
-            if (updateCategorieDto.id != id)
+            if (updateGenreDto.id != id)
             {
-                throw new BadHttpRequestException("Id does not match the caregorie id");
+                throw new BadHttpRequestException("Id does not match the genre id");
             }
 
-            if (updateCategorieDto == null)
+            if (updateGenreDto == null)
             {
-                throw new BadHttpRequestException("Invalid categorie"); 
+                throw new BadHttpRequestException("Invalid genre"); 
             }
 
-            GenreModel categorieModel = _mapper.Map<GenreModel>(updateCategorieDto);
-            GenreModel categorie = await _categorieRepository.UpdateAsync(categorieModel);
+            GenreModel genreModel = _mapper.Map<GenreModel>(updateGenreDto);
+            GenreModel genre = await _genreRepository.UpdateAsync(genreModel);
             
-            return categorie;
+            return genre;
         }
 
         public async Task<GenreModel?> getGenreAnimes(int id)
@@ -109,7 +109,7 @@ namespace AnimeWeb.Service
                 throw new BadHttpRequestException("Id invalid");
             }
 
-            GenreModel genre = await _categorieRepository.getGenreAnimesAsync(id);
+            GenreModel genre = await _genreRepository.getGenreAnimesAsync(id);
 
             if (genre == null)
             {

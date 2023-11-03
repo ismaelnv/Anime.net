@@ -182,6 +182,30 @@ namespace AnimeWeb.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        
+        [HttpPut("{animeId}/genre/{genreId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<AnimeModel>> relateAnimeAndGenre(int animeId, int genreId)
+        {
+            try
+            {
+
+                AnimeModel animeModel = await _animeService.relateAnimesAndGenres(animeId,genreId);
+
+                if (animeModel == null)
+                {
+                    return NotFound("The genre or anime you want to search for was not found");
+                }
+
+                return animeModel;
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
+        }
 
     }
 }
