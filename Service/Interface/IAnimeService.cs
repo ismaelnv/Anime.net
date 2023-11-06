@@ -12,5 +12,6 @@ namespace AnimeWeb.Service
         Task<AnimeModel?> removeAnime(int id);
         Task<AnimeModel?> getAnimeChapters(int id);
         Task<AnimeModel?> relateAnimesAndGenres(int animeId,int genreId);
+        Task<AnimeModel?> getAnimeAndGenres(int id);
     }
 }

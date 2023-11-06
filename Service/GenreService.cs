@@ -118,5 +118,17 @@ namespace AnimeWeb.Service
 
             return genre;
         }
+
+        public async Task<IEnumerable<AnimeModel?>> getAnimesByGenre(string nameGenre)
+        {
+
+            if (nameGenre == "")
+            {
+                throw new BadHttpRequestException("Invalid gender name");
+            }
+
+            IEnumerable<AnimeModel> animes = await _genreRepository.GetAnimesByGenreAsync(nameGenre);
+            return animes;
+        }
     }
 }

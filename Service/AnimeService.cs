@@ -114,7 +114,7 @@ namespace AnimeWeb.Service
                 throw new BadHttpRequestException("Id invalid");
             }
 
-            AnimeModel anime = await _animeRepository.getanimeChaptersAsync(id);
+            AnimeModel anime = await _animeRepository.GetanimeChaptersAsync(id);
 
             if (anime == null)
             {
@@ -157,6 +157,25 @@ namespace AnimeWeb.Service
 
             return animeModel;
         }
+
+        public async Task<AnimeModel?> getAnimeAndGenres(int id)
+        {
+
+            if ( id == 0)
+            {
+                throw new BadHttpRequestException("Id invalid");
+            }
+
+            AnimeModel anime = await _animeRepository.GetAnimeAndGenres(id);
+
+            if (anime == null)
+            {
+                return null;
+            }
+
+            return anime;
+        }
+        
     }
 }
 

@@ -17,7 +17,7 @@ namespace AnimeWeb.Repository
             _db = db;
         }
 
-        public async Task<AnimeModel> getanimeChaptersAsync(int id)
+        public async Task<AnimeModel> GetanimeChaptersAsync(int id)
         {
 
             AnimeModel anime = await _db.Anime.Where(A => A.Id == id).Include(A => A.chapters).FirstAsync();
@@ -47,6 +47,14 @@ namespace AnimeWeb.Repository
             
             .ToListAsync();
             return animeDto;
-        } 
+        }
+
+        public async Task<AnimeModel> GetAnimeAndGenres(int id)
+        {
+            
+            AnimeModel anime = await _db.Anime.Where(A => A.Id == id).Include(A => A.Genres).FirstAsync();
+            return anime;           
+        }
+
     }
 }

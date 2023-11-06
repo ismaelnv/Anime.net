@@ -147,6 +147,9 @@ namespace AnimeWeb.Controllers
         }
 
         [HttpPost("{id}/animes") ]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<GenreModel?>> createAnimeAndRelateItToGenre(int id,[FromBody] CreateAnimeDto createAnimeDto)
         {
 
@@ -170,7 +173,7 @@ namespace AnimeWeb.Controllers
                 CreateAnimeDto animeDto = _mapper.Map<CreateAnimeDto>(anime);
 
                 await _animeService.createAnime(animeDto);
-                return genre;
+                return Ok(genre);
             }
             catch(Exception e)
             {
@@ -178,5 +181,26 @@ namespace AnimeWeb.Controllers
                 return BadRequest(e.Message); 
             }
         }  
+
+        [HttpGet("animes/{nameGenre}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<AnimeDto?>>> getAnimesByGenre(string nameGenre)
+        {
+            try
+            {
+
+                IEnumerable<AnimeModel?> animes = await _genreService.getAnimesByGenreAsync(nameGenre);
+                IEnumerable<AnimeDto>animeDto = _mapper.Map<IEnumerable<AnimeDto>>(animes);
+                return Ok(animeDto);
+            }
+            catch(Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
+            
+        }
     }
 }

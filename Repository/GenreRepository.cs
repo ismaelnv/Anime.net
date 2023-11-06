@@ -32,6 +32,20 @@ namespace AnimeWeb.Repository
             return entidad;
         }
 
+        public async Task<List<AnimeModel>> GetAnimesByGenreAsync(string nombreGenero)
+        {
 
+            List<AnimeModel> animes = new List<AnimeModel>();
+
+            using (_db) 
+            {
+
+                animes = await _db.Anime
+                .Where(a => a.Genres.Any(g => g.name == nombreGenero))
+                .ToListAsync();
+            }
+
+            return animes;
+        }
     }
 }

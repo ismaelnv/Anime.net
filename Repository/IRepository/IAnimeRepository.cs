@@ -8,7 +8,8 @@ namespace AnimeWeb.Repository.IRepository
     {
         
         Task<AnimeModel> UpdateAsync(AnimeModel entidad);
-        Task<AnimeModel> getanimeChaptersAsync(int id);
+        Task<AnimeModel> GetanimeChaptersAsync(int id);
         Task<List<AnimeDto>> GetAllAnimeDtoAsync();
+        Task<AnimeModel> GetAnimeAndGenres(int id);
     }
 }

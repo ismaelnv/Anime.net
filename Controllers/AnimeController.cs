@@ -191,7 +191,7 @@ namespace AnimeWeb.Controllers
             try
             {
 
-                AnimeModel animeModel = await _animeService.relateAnimesAndGenres(animeId,genreId);
+                AnimeModel? animeModel = await _animeService.relateAnimesAndGenres(animeId,genreId);
 
                 if (animeModel == null)
                 {
@@ -201,6 +201,30 @@ namespace AnimeWeb.Controllers
                 return animeModel;
             }
             catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("{id}/genres")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<AnimeModel>> getAnimeAndGenres(int id)
+        {
+            try
+            {
+
+                AnimeModel? anime = await _animeService.getAnimeAndGenres(id);
+
+                if (anime == null)
+                {
+                    return NotFound("Anime not found");
+                }
+
+                return anime;
+            }
+            catch(Exception e)
             {
 
                 return BadRequest(e.Message);
