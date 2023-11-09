@@ -186,6 +186,7 @@ namespace AnimeWeb.Controllers
         [HttpPut("{animeId}/genre/{genreId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<AnimeModel>> relateAnimeAndGenre(int animeId, int genreId)
         {
             try
@@ -198,7 +199,7 @@ namespace AnimeWeb.Controllers
                     return NotFound("The genre or anime you want to search for was not found");
                 }
 
-                return animeModel;
+                return Ok(animeModel);
             }
             catch (Exception e)
             {
@@ -210,6 +211,7 @@ namespace AnimeWeb.Controllers
         [HttpGet("{id}/genres")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<AnimeModel>> getAnimeAndGenres(int id)
         {
             try
@@ -222,13 +224,22 @@ namespace AnimeWeb.Controllers
                     return NotFound("Anime not found");
                 }
 
-                return anime;
+                return Ok(anime);
             }
             catch(Exception e)
             {
 
                 return BadRequest(e.Message);
             }
+        }
+
+        [HttpGet("latest")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<AnimeDto>>> getLatestAnimesAdded()
+        {
+
+            IEnumerable<AnimeDto> animes = await _animeService.getLatestAnimesAdded();
+            return Ok(animes);
         }
 
     }

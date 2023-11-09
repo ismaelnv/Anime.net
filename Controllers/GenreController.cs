@@ -191,7 +191,7 @@ namespace AnimeWeb.Controllers
             try
             {
 
-                IEnumerable<AnimeModel?> animes = await _genreService.getAnimesByGenreAsync(nameGenre);
+                IEnumerable<AnimeModel?> animes = await _genreService.getAnimesByGenre(nameGenre);
                 IEnumerable<AnimeDto>animeDto = _mapper.Map<IEnumerable<AnimeDto>>(animes);
                 return Ok(animeDto);
             }

@@ -11,5 +11,6 @@ namespace AnimeWeb.Service.Interface
         Task<ChapterModel?> removeChapter(int id);
         Task<ChapterModel?> updateChapter(int id, UpdateChapterDto updateChapterDto);
         Task<ChapterModel?> getChapterVideos(int id);
+        Task<IEnumerable<ChapterDto>> orderTheChaptersFromSmallestToLargest();
     }
 }

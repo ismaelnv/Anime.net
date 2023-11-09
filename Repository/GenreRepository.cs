@@ -32,7 +32,7 @@ namespace AnimeWeb.Repository
             return entidad;
         }
 
-        public async Task<List<AnimeModel>> GetAnimesByGenreAsync(string nombreGenero)
+        public async Task<List<AnimeModel>> GetAnimesByGenreAsync(string nameGenre)
         {
 
             List<AnimeModel> animes = new List<AnimeModel>();
@@ -41,7 +41,7 @@ namespace AnimeWeb.Repository
             {
 
                 animes = await _db.Anime
-                .Where(a => a.Genres.Any(g => g.name == nombreGenero))
+                .Where(a => a.Genres.Any(g => g.name == nameGenre))
                 .ToListAsync();
             }
 

@@ -133,5 +133,14 @@ namespace AnimeWeb.Service
 
             return chapter;
         }
+
+        public async Task<IEnumerable<ChapterDto>> orderTheChaptersFromSmallestToLargest()
+        {
+            
+            IEnumerable<ChapterDto> chapters =  await this.getChapters();
+            IEnumerable<ChapterDto> orderedChapters = chapters.OrderBy(chapter => chapter.episode);
+
+            return orderedChapters;
+        }
     }
 }

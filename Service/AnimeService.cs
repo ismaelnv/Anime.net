@@ -1,3 +1,4 @@
+using System.Data;
 using AnimeWeb.Models;
 using AnimeWeb.Models.Dto;
 using AnimeWeb.Repository.IRepository;
@@ -174,6 +175,17 @@ namespace AnimeWeb.Service
             }
 
             return anime;
+        }
+
+        public async Task<IEnumerable<AnimeDto>> getLatestAnimesAdded()
+        {
+
+            IEnumerable<AnimeDto> animes = await this.getAnimes();
+            var animesArrangedInDescendingOrder = animes.OrderByDescending(anime => anime.Id);
+            
+            IEnumerable<AnimeDto> theLastFifty = animesArrangedInDescendingOrder.Take(50).ToList();
+            
+            return theLastFifty;
         }
         
     }

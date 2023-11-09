@@ -7,6 +7,6 @@ namespace AnimeWeb.Repository.IRepository
     {
         Task<GenreModel> UpdateAsync(GenreModel entidad);
         Task<GenreModel> getGenreAnimesAsync(int id);
-        Task<List<AnimeModel>> GetAnimesByGenreAsync(string nombreGenero);
+        Task<List<AnimeModel>> GetAnimesByGenreAsync(string nameGenre);
     }
 }

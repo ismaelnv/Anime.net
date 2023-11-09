@@ -13,5 +13,6 @@ namespace AnimeWeb.Service
         Task<AnimeModel?> getAnimeChapters(int id);
         Task<AnimeModel?> relateAnimesAndGenres(int animeId,int genreId);
         Task<AnimeModel?> getAnimeAndGenres(int id);
+        Task<IEnumerable<AnimeDto>> getLatestAnimesAdded();
     }
 }
