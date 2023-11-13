@@ -150,7 +150,7 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<GenreModel?>> createAnimeAndRelateItToGenre(int id,[FromBody] CreateAnimeDto createAnimeDto)
+        public async Task<ActionResult<GenreModel?>> createAnimeAndRelateItToGenre(int id,[FromBody] CAnimeDto cAnimeDto)
         {
 
             try
@@ -167,12 +167,12 @@ namespace AnimeWeb.Controllers
                     return NotFound("The genre was not found searching");
                 }
 
-                AnimeModel anime = _mapper.Map<AnimeModel>(createAnimeDto);
+                AnimeModel anime = _mapper.Map<AnimeModel>(cAnimeDto.createAnimeDto);
                 anime.Genres.Add(genre);
 
                 CreateAnimeDto animeDto = _mapper.Map<CreateAnimeDto>(anime);
 
-                await _animeService.createAnime(animeDto);
+                await _animeService.createAnime(cAnimeDto);
                 return Ok(genre);
             }
             catch(Exception e)

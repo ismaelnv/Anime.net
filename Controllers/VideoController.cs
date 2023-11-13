@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AnimeWeb.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/videos")]
     public class VideoController : Controller
     {
 

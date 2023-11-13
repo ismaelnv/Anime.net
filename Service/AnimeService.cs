@@ -12,12 +12,14 @@ namespace AnimeWeb.Service
 
         private IAnimeRepository _animeRepository;
         private IMapper _mapper;
+        private IStudioService _studioService;
 
         private IGenreService _genreServie;
 
-        public AnimeService(IAnimeRepository animeRepository,IMapper mapper,IGenreService genreService)
+        public AnimeService(IAnimeRepository animeRepository,IMapper mapper,IGenreService genreService,IStudioService studioService)
         {
             
+            _studioService = studioService;
             _animeRepository = animeRepository;
             _mapper = mapper;
             _genreServie = genreService;
@@ -31,21 +33,27 @@ namespace AnimeWeb.Service
             return animes;
         }
 
-        public async Task<AnimeModel?> createAnime(CreateAnimeDto createAnimeDto)
+        public async Task<AnimeModel?> createAnime(CAnimeDto cAnimeDto)
         {
 
-            if (createAnimeDto == null)
+            if (cAnimeDto.createAnimeDto == null)
             {
                 throw new BadHttpRequestException("Invalid anime");
             }
 
-            AnimeModel anime = _mapper.Map<AnimeModel>(createAnimeDto);
+            AnimeModel anime = _mapper.Map<AnimeModel>(cAnimeDto.createAnimeDto);
             anime.uploadDate = DateTime.Now;
             anime.updateDate = DateTime.Now;
-            anime.Genres = createAnimeDto.Genres;
 
             await _animeRepository.CreateAsync(anime);
 
+            if (cAnimeDto.createAnimeDto != null && cAnimeDto.studioIds.Any() && cAnimeDto.genreIds.Any())
+            {
+
+                await this.animeRelationshipWithStudios(anime.Id,cAnimeDto.studioIds);
+                await this.relateAnimesAndGenres(anime.Id, cAnimeDto.genreIds);
+            }
+            
             return anime;
         }
 
@@ -125,38 +133,24 @@ namespace AnimeWeb.Service
             return anime;
         }
 
-        public async Task<AnimeModel?> relateAnimesAndGenres(int animeId,int genreId)
+        public async Task relateAnimesAndGenres(int id,List<int> genreIds)
         {
 
-            if ( genreId == 0)
+           AnimeModel? anime = await this.getAnimeId(id);
+            
+            if ( anime == null)
             {
-                throw new BadHttpRequestException("genereId invalid");
+                
             }
 
-            if ( animeId == 0)
+            List<GenreModel> genres = await _genreServie.getGenresId(genreIds); 
+
+            foreach (GenreModel genre in genres)
             {
-                throw new BadHttpRequestException("animeId invalid");
+                anime.Genres.Add(genre);
             }
-
-            GenreModel? genreModel = await _genreServie.getGenreId(genreId);
-
-            if (genreModel == null)
-            {
-                return null;
-            }
-
-            AnimeModel? animeModel = await this.getAnimeId(animeId);
-
-            if (animeModel == null)
-            {
-                return null;
-            }
-
-            animeModel.Genres.Add(genreModel);
 
             await _animeRepository.EngraveAsync();
-
-            return animeModel;
         }
 
         public async Task<AnimeModel?> getAnimeAndGenres(int id)
@@ -187,7 +181,44 @@ namespace AnimeWeb.Service
             
             return theLastFifty;
         }
-        
+
+        public async Task animeRelationshipWithStudios(int animeId, List<int> studioIds)
+        {
+
+            AnimeModel? anime = await this.getAnimeId(animeId);
+            
+            if ( anime == null)
+            {
+                
+            }
+
+            List<StudioModel> studios = await _studioService.getStudiosId(studioIds); 
+
+            foreach (StudioModel studio in studios)
+            {
+                anime?.Studios.Add(studio);
+            }
+
+            await _animeRepository.EngraveAsync();
+        }
+
+        public async Task<AnimeModel?> getAnimeAndStudios(int id)
+        {
+
+            if ( id == 0)
+            {
+                throw new BadHttpRequestException("Id invalid");
+            }
+
+            AnimeModel anime = await _animeRepository.GetAnimeAndStudios(id);
+
+            if (anime == null)
+            {
+                return null;
+            }
+
+            return anime;
+        }
     }
 }
 

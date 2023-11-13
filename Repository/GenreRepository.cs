@@ -47,5 +47,11 @@ namespace AnimeWeb.Repository
 
             return animes;
         }
+
+        public async Task<List<GenreModel>> GetByIdsAsync(List<int> genreIds)
+        {
+            
+            return await _db.Genre.Where(s => genreIds.Contains(s.id)).ToListAsync();
+        }
     }
 }

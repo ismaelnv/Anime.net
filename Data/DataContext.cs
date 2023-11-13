@@ -15,6 +15,7 @@ namespace AnimeWeb.Data
         public DbSet<ChapterModel> Capitulo { get; set; }
         public DbSet<VideoModel> Video { get; set; }
         public DbSet<GenreModel> Genre { get; set; }
+        public DbSet<StudioModel> Studio { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +38,13 @@ namespace AnimeWeb.Data
             modelBuilder.Entity<GenreModel>()
             .HasMany(g => g.animes)
             .WithMany(e => e.Genres);
+
+            
+            //Relacion de muchos a muchos de las tablas Studio y Anime
+            modelBuilder.Entity<StudioModel>()
+            .HasMany(s => s.Animes)
+            .WithMany(e => e.Studios)
+            .UsingEntity("Studio_Anime");  
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -36,12 +36,12 @@ namespace AnimeWeb.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<AnimeDto>> createAnime(CreateAnimeDto createAnimeDto)
+        public async Task<ActionResult<AnimeDto>> createAnime([FromBody] CAnimeDto cAnimeDto)
         {
             try
             {
 
-                AnimeModel? animeModel = await _animeService.createAnime(createAnimeDto);
+                AnimeModel? animeModel = await _animeService.createAnime(cAnimeDto);
                 AnimeDto anime = _mapper.Map<AnimeDto>(animeModel);
 
                 return Created(string.Empty, anime);
@@ -183,30 +183,30 @@ namespace AnimeWeb.Controllers
             }
         }
         
-        [HttpPut("{animeId}/genre/{genreId}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<AnimeModel>> relateAnimeAndGenre(int animeId, int genreId)
-        {
-            try
-            {
+        // [HttpPut("{animeId}/genre/{genreId}")]
+        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        // [ProducesResponseType(StatusCodes.Status404NotFound)]
+        // [ProducesResponseType(StatusCodes.Status200OK)]
+        // public async Task<ActionResult<AnimeModel>> relateAnimeAndGenre(int animeId, int )
+        // {
+        //     try
+        //     {
 
-                AnimeModel? animeModel = await _animeService.relateAnimesAndGenres(animeId,genreId);
+        //         AnimeModel? animeModel = await _animeService.relateAnimesAndGenres(animeId,genreId);
 
-                if (animeModel == null)
-                {
-                    return NotFound("The genre or anime you want to search for was not found");
-                }
+        //         if (animeModel == null)
+        //         {
+        //             return NotFound("The genre or anime you want to search for was not found");
+        //         }
 
-                return Ok(animeModel);
-            }
-            catch (Exception e)
-            {
+        //         return Ok(animeModel);
+        //     }
+        //     catch (Exception e)
+        //     {
 
-                return BadRequest(e.Message);
-            }
-        }
+        //         return BadRequest(e.Message);
+        //     }
+        // }
 
         [HttpGet("{id}/genres")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -240,6 +240,32 @@ namespace AnimeWeb.Controllers
 
             IEnumerable<AnimeDto> animes = await _animeService.getLatestAnimesAdded();
             return Ok(animes);
+        }
+
+
+        [HttpGet("{id}/studios")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<AnimeModel>> getAnimeAndStudios(int id)
+        {
+            try
+            {
+
+                AnimeModel? anime = await _animeService.getAnimeAndStudios(id);
+
+                if (anime == null)
+                {
+                    return NotFound("Anime not found");
+                }
+
+                return Ok(anime);
+            }
+            catch(Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
         }
 
     }

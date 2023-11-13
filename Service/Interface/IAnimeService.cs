@@ -6,13 +6,15 @@ namespace AnimeWeb.Service
     public interface IAnimeService
     {
         Task<IEnumerable<AnimeDto>> getAnimes();
-        Task<AnimeModel?> createAnime(CreateAnimeDto createAnimeDto);
+        Task<AnimeModel?> createAnime(CAnimeDto cAnimeDto);
         Task<AnimeModel?> updateAnime(int id, UpdateAnimeDto updateAnimeDto);
         Task<AnimeModel?> getAnimeId(int id);
         Task<AnimeModel?> removeAnime(int id);
         Task<AnimeModel?> getAnimeChapters(int id);
-        Task<AnimeModel?> relateAnimesAndGenres(int animeId,int genreId);
+        Task relateAnimesAndGenres(int id,List<int> genreIds);
         Task<AnimeModel?> getAnimeAndGenres(int id);
         Task<IEnumerable<AnimeDto>> getLatestAnimesAdded();
+        Task animeRelationshipWithStudios(int animeId, List<int> studioIds);
+        Task<AnimeModel?> getAnimeAndStudios(int id);
     }
 }

@@ -14,5 +14,6 @@ namespace AnimeWeb.Service.Interface
         Task<GenreModel?> removeGenre(int id);
         Task<GenreModel?> getGenreAnimes(int id);
         Task<IEnumerable<AnimeModel?>> getAnimesByGenre(string nameGenre);
+        Task<List<GenreModel>> getGenresId(List<int> genreIds);
     }
 }

@@ -130,5 +130,12 @@ namespace AnimeWeb.Service
             IEnumerable<AnimeModel> animes = await _genreRepository.GetAnimesByGenreAsync(nameGenre);
             return animes;
         }
+
+        public async Task<List<GenreModel>> getGenresId(List<int> genreIds)
+        {
+
+            List<GenreModel> genres = await _genreRepository.GetByIdsAsync(genreIds);
+            return genres;
+        }
     }
 }

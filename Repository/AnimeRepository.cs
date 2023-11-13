@@ -56,5 +56,11 @@ namespace AnimeWeb.Repository
             return anime;           
         }
 
+        public async Task<AnimeModel> GetAnimeAndStudios(int id)
+        {
+
+            AnimeModel anime = await _db.Anime.Where(A => A.Id == id).Include(A => A.Studios).FirstAsync();
+            return anime;
+        }
     }
 }
