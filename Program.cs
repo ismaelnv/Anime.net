@@ -6,6 +6,7 @@ using AnimeWeb.Repository.IRepository;
 using AnimeWeb.Service;
 using AnimeWeb.Service.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,5 +57,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseStaticFiles(new StaticFileOptions(){
+
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath,"Images")),
+    RequestPath = "/img"
+});
 
 app.Run();

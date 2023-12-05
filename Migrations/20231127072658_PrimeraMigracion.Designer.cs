@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AnimeWeb.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231102185910_CreacionDeTablasYRelaciones")]
-    partial class CreacionDeTablasYRelaciones
+    [Migration("20231127072658_PrimeraMigracion")]
+    partial class PrimeraMigracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,6 +40,10 @@ namespace AnimeWeb.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("ImageContent")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
 
                     b.Property<string>("description")
                         .IsRequired()
@@ -127,6 +131,30 @@ namespace AnimeWeb.Migrations
                     b.ToTable("Genre");
                 });
 
+            modelBuilder.Entity("AnimeWeb.Models.StudioModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("state")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("updateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("uploadDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Studio");
+                });
+
             modelBuilder.Entity("AnimeWeb.Models.VideoModel", b =>
                 {
                     b.Property<int>("id")
@@ -158,6 +186,21 @@ namespace AnimeWeb.Migrations
                     b.HasIndex("idChapter");
 
                     b.ToTable("Video");
+                });
+
+            modelBuilder.Entity("Studio_Anime", b =>
+                {
+                    b.Property<int>("AnimesId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Studiosid")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("AnimesId", "Studiosid");
+
+                    b.HasIndex("Studiosid");
+
+                    b.ToTable("Studio_Anime");
                 });
 
             modelBuilder.Entity("AnimeModelGenreModel", b =>
@@ -195,6 +238,21 @@ namespace AnimeWeb.Migrations
                         .IsRequired();
 
                     b.Navigation("ChapterModel");
+                });
+
+            modelBuilder.Entity("Studio_Anime", b =>
+                {
+                    b.HasOne("AnimeWeb.Models.AnimeModel", null)
+                        .WithMany()
+                        .HasForeignKey("AnimesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AnimeWeb.Models.StudioModel", null)
+                        .WithMany()
+                        .HasForeignKey("Studiosid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AnimeWeb.Models.AnimeModel", b =>

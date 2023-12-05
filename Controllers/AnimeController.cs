@@ -268,5 +268,24 @@ namespace AnimeWeb.Controllers
             }
         }
 
+        [HttpPost("{id}/image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> CreateImage(int id, IFormFile file)
+        {
+            try
+            {
+
+                await _animeService.CreateImage(id,file);
+                return Ok();
+            }
+            catch(Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }  
+        }
+
     }
 }

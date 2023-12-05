@@ -199,8 +199,7 @@ namespace AnimeWeb.Controllers
             {
 
                 return BadRequest(e.Message);
-            }
-            
+            }  
         }
     }
 }

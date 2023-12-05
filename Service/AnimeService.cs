@@ -27,9 +27,16 @@ namespace AnimeWeb.Service
 
         public async Task<IEnumerable<AnimeDto>> getAnimes()
         {
+            string baseUrl = "http://192.168.1.6:5092/img";
 
             IEnumerable<AnimeModel> animeList = await _animeRepository.GetAllAsync();
             IEnumerable<AnimeDto> animes = _mapper.Map<IEnumerable<AnimeDto>>(animeList);
+
+            foreach (var anime in animes)
+            {
+                anime.image = $"{baseUrl}/{anime.image}";
+            }
+
             return animes;
         }
 
@@ -189,7 +196,8 @@ namespace AnimeWeb.Service
             
             if ( anime == null)
             {
-                
+                //buscar como crear un execion de not foud
+                throw new ("The anime you are looking for was not found");
             }
 
             List<StudioModel> studios = await _studioService.getStudiosId(studioIds); 
@@ -218,6 +226,51 @@ namespace AnimeWeb.Service
             }
 
             return anime;
+        }
+
+        public async Task CreateImage(int id, IFormFile file)
+        {
+
+            if (id == 0)
+            {
+
+                throw new BadHttpRequestException("Id invalid");
+            }
+
+            AnimeModel? anime = await this.getAnimeId(id);
+
+            if (anime == null)
+            {
+
+                throw new("Couldn't find the anime");
+            }
+
+            //Obtener la ruta de la carpeta
+            string paht = Path.Combine(Directory.GetCurrentDirectory(),"Images");
+            //crear la carpeta si  no  existe o no se encuentra
+            if(!Directory.Exists(paht))
+            {
+
+                Directory.CreateDirectory(paht);
+            }
+
+            //obteniendo el nombre del archivo
+            FileInfo fileInfo = new FileInfo(file.FileName);
+           // string uniqueFileName = file.Name + fileInfo.Extension;
+           //Creando un nombre unico para las imagenes con GUILD
+            string uniqueFileName = $"{Guid.NewGuid()}{fileInfo.Extension}";
+            anime.image = uniqueFileName;
+            //convinar el nombe de la imagen con la carpeta para crear un nombre unico    
+            string fileNameWithPath = Path.Combine(paht,uniqueFileName);
+
+            //agregar la imagen al paquete
+            using ( var stream = new FileStream(fileNameWithPath,FileMode.Create))
+            {
+
+                file.CopyTo(stream);
+            }
+
+            await _animeRepository.EngraveAsync();
         }
     }
 }

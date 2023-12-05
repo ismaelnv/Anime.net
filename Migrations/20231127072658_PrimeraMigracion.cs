@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AnimeWeb.Migrations
 {
     /// <inheritdoc />
-    public partial class CreacionDeTablasYRelaciones : Migration
+    public partial class PrimeraMigracion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,8 @@ namespace AnimeWeb.Migrations
                     uploadDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     updateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     image = table.Column<string>(type: "TEXT", nullable: false),
-                    state = table.Column<bool>(type: "INTEGER", nullable: false)
+                    state = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ImageContent = table.Column<byte[]>(type: "BLOB", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,6 +44,22 @@ namespace AnimeWeb.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Genre", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Studio",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    name = table.Column<string>(type: "TEXT", nullable: false),
+                    uploadDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    updateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    state = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Studio", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,6 +112,30 @@ namespace AnimeWeb.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Studio_Anime",
+                columns: table => new
+                {
+                    AnimesId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Studiosid = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Studio_Anime", x => new { x.AnimesId, x.Studiosid });
+                    table.ForeignKey(
+                        name: "FK_Studio_Anime_Anime_AnimesId",
+                        column: x => x.AnimesId,
+                        principalTable: "Anime",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Studio_Anime_Studio_Studiosid",
+                        column: x => x.Studiosid,
+                        principalTable: "Studio",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Video",
                 columns: table => new
                 {
@@ -129,6 +170,11 @@ namespace AnimeWeb.Migrations
                 column: "animeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Studio_Anime_Studiosid",
+                table: "Studio_Anime",
+                column: "Studiosid");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Video_idChapter",
                 table: "Video",
                 column: "idChapter");
@@ -141,10 +187,16 @@ namespace AnimeWeb.Migrations
                 name: "AnimeModelGenreModel");
 
             migrationBuilder.DropTable(
+                name: "Studio_Anime");
+
+            migrationBuilder.DropTable(
                 name: "Video");
 
             migrationBuilder.DropTable(
                 name: "Genre");
+
+            migrationBuilder.DropTable(
+                name: "Studio");
 
             migrationBuilder.DropTable(
                 name: "Capitulo");

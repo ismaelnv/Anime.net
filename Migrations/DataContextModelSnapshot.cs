@@ -38,6 +38,10 @@ namespace AnimeWeb.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<byte[]>("ImageContent")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
                     b.Property<string>("description")
                         .IsRequired()
                         .HasColumnType("TEXT");

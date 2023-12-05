@@ -16,5 +16,6 @@ namespace AnimeWeb.Service
         Task<IEnumerable<AnimeDto>> getLatestAnimesAdded();
         Task animeRelationshipWithStudios(int animeId, List<int> studioIds);
         Task<AnimeModel?> getAnimeAndStudios(int id);
+        Task CreateImage(int id, IFormFile file);
     }
 }

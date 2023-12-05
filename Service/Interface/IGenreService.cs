@@ -13,7 +13,7 @@ namespace AnimeWeb.Service.Interface
         Task<GenreModel?> getGenreId(int id);
         Task<GenreModel?> removeGenre(int id);
         Task<GenreModel?> getGenreAnimes(int id);
-        Task<IEnumerable<AnimeModel?>> getAnimesByGenre(string nameGenre);
+        Task<IEnumerable<AnimeModel?>> getAnimesByGenre(string nombreGenero);
         Task<List<GenreModel>> getGenresId(List<int> genreIds);
     }
 }

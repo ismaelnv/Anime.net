@@ -95,8 +95,6 @@ namespace AnimeWeb.Controllers
 
                 return BadRequest(ex.Message);
             }
-
-
         }
 
         [HttpDelete]
@@ -124,6 +122,5 @@ namespace AnimeWeb.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

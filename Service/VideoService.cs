@@ -23,6 +23,7 @@ namespace AnimeWeb.Service
 
         public async Task<IEnumerable<VideoDto>> getVideos()
         {
+            
             IEnumerable<VideoModel> videoModels = await _videoRepository.GetAllAsync();
             IEnumerable<VideoDto> videos = _mapper.Map<IEnumerable<VideoDto>>(videoModels);
             return videos;
