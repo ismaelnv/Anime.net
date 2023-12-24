@@ -6,6 +6,7 @@ namespace AnimeWeb.Models.Dto
         
         public DateTime uploadDate { get; set; }
         public DateTime updateDate { get; set; }
+        public virtual List<ImageModel> Images { get; set; } =  new List<ImageModel>();  
     
     }
 }

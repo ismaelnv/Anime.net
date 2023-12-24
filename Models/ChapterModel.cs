@@ -14,5 +14,7 @@ namespace AnimeWeb.Models
         public virtual AnimeModel AnimeModel { get; set; } = null!;
         public bool state { get; set; }
         public virtual ICollection<VideoModel> videos { get; } = new List<VideoModel>(); 
+        public string image { get;set; } = string.Empty;
+        public List<ImageModel> Images { get; set; } = new List<ImageModel>();
     }
 }

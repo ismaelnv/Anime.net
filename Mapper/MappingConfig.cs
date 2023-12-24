@@ -28,6 +28,8 @@ namespace AnimeWeb.Mapper
             CreateMap<StudioModel, UpdateStudioDto>().ReverseMap();
             CreateMap<StudioModel, CreateStudioDto>().ReverseMap();
             CreateMap<StudioModel, StudioDto>().ReverseMap();
+
+            CreateMap<ImageModel, ImageCreateDto>().ReverseMap();
         }
         
     }

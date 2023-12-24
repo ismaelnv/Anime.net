@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AnimeWeb.Migrations
 {
     /// <inheritdoc />
-    public partial class PrimeraMigracion : Migration
+    public partial class CreacionDeTablas : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,9 +21,7 @@ namespace AnimeWeb.Migrations
                     description = table.Column<string>(type: "TEXT", nullable: false),
                     uploadDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     updateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    image = table.Column<string>(type: "TEXT", nullable: false),
-                    state = table.Column<bool>(type: "INTEGER", nullable: false),
-                    ImageContent = table.Column<byte[]>(type: "BLOB", nullable: false)
+                    state = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,7 +72,8 @@ namespace AnimeWeb.Migrations
                     uploadDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     updateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     animeId = table.Column<int>(type: "INTEGER", nullable: false),
-                    state = table.Column<bool>(type: "INTEGER", nullable: false)
+                    state = table.Column<bool>(type: "INTEGER", nullable: false),
+                    image = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -136,6 +135,36 @@ namespace AnimeWeb.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Image",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    name = table.Column<string>(type: "TEXT", nullable: false),
+                    uploadDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    updateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    state = table.Column<bool>(type: "INTEGER", nullable: false),
+                    animeId = table.Column<int>(type: "INTEGER", nullable: true),
+                    chapterId = table.Column<int>(type: "INTEGER", nullable: true),
+                    imageType = table.Column<string>(type: "TEXT", nullable: false),
+                    imageCategory = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Image", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Image_Anime_animeId",
+                        column: x => x.animeId,
+                        principalTable: "Anime",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Image_Capitulo_chapterId",
+                        column: x => x.chapterId,
+                        principalTable: "Capitulo",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Video",
                 columns: table => new
                 {
@@ -170,6 +199,16 @@ namespace AnimeWeb.Migrations
                 column: "animeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Image_animeId",
+                table: "Image",
+                column: "animeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Image_chapterId",
+                table: "Image",
+                column: "chapterId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Studio_Anime_Studiosid",
                 table: "Studio_Anime",
                 column: "Studiosid");
@@ -185,6 +224,9 @@ namespace AnimeWeb.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AnimeModelGenreModel");
+
+            migrationBuilder.DropTable(
+                name: "Image");
 
             migrationBuilder.DropTable(
                 name: "Studio_Anime");

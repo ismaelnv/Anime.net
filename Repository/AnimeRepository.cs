@@ -17,10 +17,16 @@ namespace AnimeWeb.Repository
             _db = db;
         }
 
+        public async Task<List<AnimeModel>> GetAnimes()
+        {
+
+            return await _db.Anime.Include(A => A.Images).Include( A => A.Genres).ToListAsync();
+        }
+
         public async Task<AnimeModel> GetanimeChaptersAsync(int id)
         {
 
-            AnimeModel anime = await _db.Anime.Where(A => A.Id == id).Include(A => A.chapters).FirstAsync();
+            AnimeModel anime = await _db.Anime.Where(A => A.Id == id).Include(A => A.Chapters).ThenInclude(c => c.Images).FirstAsync();
             return anime;
         }
 
@@ -61,6 +67,19 @@ namespace AnimeWeb.Repository
 
             AnimeModel anime = await _db.Anime.Where(A => A.Id == id).Include(A => A.Studios).FirstAsync();
             return anime;
+        }
+
+        public async Task<AnimeModel> GetAnimeAndImages(int id)
+        {
+
+            AnimeModel anime = await _db.Anime.Where(A => A.Id == id).Include(A => A.Images).FirstAsync();
+            return anime;
+        }
+
+        public async Task<AnimeModel> GetAnimeByIdWithAttributs(int id)
+        {
+
+            return await _db.Anime.Where( A => A.Id == id).Include(A => A.Images).Include( A => A.Genres).FirstAsync();
         }
     }
 }

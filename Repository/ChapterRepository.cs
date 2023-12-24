@@ -16,6 +16,13 @@ namespace AnimeWeb.Repository
             _db = db;
         }
 
+        public async Task<List<ChapterModel>> GetChapters()
+        {
+
+            List<ChapterModel> chapters = await _db.Capitulo.Include(c => c.Images).ToListAsync();
+            return chapters;
+        }
+
         public async Task<ChapterModel> getChapterVideosAsync(int id)
         {
 

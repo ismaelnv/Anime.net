@@ -12,5 +12,8 @@ namespace AnimeWeb.Repository.IRepository
         Task<List<AnimeDto>> GetAllAnimeDtoAsync();
         Task<AnimeModel> GetAnimeAndGenres(int id);
         Task<AnimeModel> GetAnimeAndStudios(int id);
+        Task<AnimeModel> GetAnimeAndImages(int id);
+        Task<AnimeModel> GetAnimeByIdWithAttributs(int id);
+        Task<List<AnimeModel>> GetAnimes();
     }
 }

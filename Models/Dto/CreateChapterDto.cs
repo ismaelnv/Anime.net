@@ -9,5 +9,6 @@ namespace AnimeWeb.Models.Dto
         public string description { get; set; } = string.Empty;
         public int animeId { get; set; }
         public bool state { get; set; }
+        public List<ImageModel> Images { get; set; } = new List<ImageModel>();
     }
 }

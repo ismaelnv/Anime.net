@@ -24,8 +24,9 @@ namespace AnimeWeb.Service
         public async Task<IEnumerable<ChapterDto>> getChapters()
         {
 
-            IEnumerable<ChapterModel> chapterModeList = await _chapterRepository.GetAllAsync();
+            IEnumerable<ChapterModel> chapterModeList = await _chapterRepository.GetChapters();
             IEnumerable<ChapterDto> chapterDtoList = _mapper.Map<IEnumerable<ChapterDto>>(chapterModeList);
+            
             return chapterDtoList;
         }
 

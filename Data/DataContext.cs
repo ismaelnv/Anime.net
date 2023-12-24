@@ -16,13 +16,14 @@ namespace AnimeWeb.Data
         public DbSet<VideoModel> Video { get; set; }
         public DbSet<GenreModel> Genre { get; set; }
         public DbSet<StudioModel> Studio { get; set; }
+        public DbSet<ImageModel> Image { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
             //Relacion de muchos a uno de los modelos AnimeModel y ChapterModel
             modelBuilder.Entity<AnimeModel>()
-            .HasMany(a => a.chapters)
+            .HasMany(a => a.Chapters)
             .WithOne(e => e.AnimeModel)
             .HasForeignKey(e => e.animeId)
             .IsRequired();
@@ -45,6 +46,29 @@ namespace AnimeWeb.Data
             .HasMany(s => s.Animes)
             .WithMany(e => e.Studios)
             .UsingEntity("Studio_Anime");  
+
+            //Relacion de uno  a muchos de los modelos ImageModel Y AnimeModel
+            modelBuilder.Entity<AnimeModel>()
+            .HasMany(e => e.Images)
+            .WithOne()
+            .HasForeignKey(e => e.animeId)
+            .IsRequired(false);
+
+            //Relacion de uno a muchos chapterModel Y ImageModel
+            modelBuilder.Entity<ChapterModel>()
+            .HasMany(e => e.Images)
+            .WithOne()
+            .HasForeignKey(e => e.chapterId)
+            .IsRequired(false);
+
+            //Para que los enum se creen como cadenas
+            modelBuilder.Entity<ImageModel>()
+            .Property(e => e.imageType)
+            .HasConversion<string>();
+            
+            modelBuilder.Entity<ImageModel>()
+            .Property(e => e.imageCategory)
+            .HasConversion<string>();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

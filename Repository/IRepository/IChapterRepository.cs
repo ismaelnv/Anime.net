@@ -8,5 +8,6 @@ namespace AnimeWeb.Repository.IRepository
         
         Task<ChapterModel> UpdateAsync(ChapterModel entidad);
         Task<ChapterModel> getChapterVideosAsync(int id);
+        Task<List<ChapterModel>> GetChapters();
     }
 }

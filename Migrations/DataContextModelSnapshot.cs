@@ -38,15 +38,7 @@ namespace AnimeWeb.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<byte[]>("ImageContent")
-                        .IsRequired()
-                        .HasColumnType("BLOB");
-
                     b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("image")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -83,6 +75,10 @@ namespace AnimeWeb.Migrations
 
                     b.Property<int>("episode")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("image")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("state")
                         .HasColumnType("INTEGER");
@@ -185,6 +181,48 @@ namespace AnimeWeb.Migrations
                     b.ToTable("Video");
                 });
 
+            modelBuilder.Entity("ImageModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("animeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("chapterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("imageCategory")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("imageType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("state")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("updateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("uploadDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("animeId");
+
+                    b.HasIndex("chapterId");
+
+                    b.ToTable("Image");
+                });
+
             modelBuilder.Entity("Studio_Anime", b =>
                 {
                     b.Property<int>("AnimesId")
@@ -218,7 +256,7 @@ namespace AnimeWeb.Migrations
             modelBuilder.Entity("AnimeWeb.Models.ChapterModel", b =>
                 {
                     b.HasOne("AnimeWeb.Models.AnimeModel", "AnimeModel")
-                        .WithMany("chapters")
+                        .WithMany("Chapters")
                         .HasForeignKey("animeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -235,6 +273,17 @@ namespace AnimeWeb.Migrations
                         .IsRequired();
 
                     b.Navigation("ChapterModel");
+                });
+
+            modelBuilder.Entity("ImageModel", b =>
+                {
+                    b.HasOne("AnimeWeb.Models.AnimeModel", null)
+                        .WithMany("Images")
+                        .HasForeignKey("animeId");
+
+                    b.HasOne("AnimeWeb.Models.ChapterModel", null)
+                        .WithMany("Images")
+                        .HasForeignKey("chapterId");
                 });
 
             modelBuilder.Entity("Studio_Anime", b =>
@@ -254,11 +303,15 @@ namespace AnimeWeb.Migrations
 
             modelBuilder.Entity("AnimeWeb.Models.AnimeModel", b =>
                 {
-                    b.Navigation("chapters");
+                    b.Navigation("Chapters");
+
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("AnimeWeb.Models.ChapterModel", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("videos");
                 });
 #pragma warning restore 612, 618

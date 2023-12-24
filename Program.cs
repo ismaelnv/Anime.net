@@ -25,8 +25,7 @@ builder.Services.AddScoped<IChapterRepository,ChapterRepository>();
 builder.Services.AddScoped<IVideoRepository,VideoRepository>();
 builder.Services.AddScoped<IGenreRepository,GenreRepository>();
 builder.Services.AddScoped<IStudioRepository,StudioRepository>();
-
-
+builder.Services.AddScoped<IImageRepository,ImageRepository>();
 
 //Service
 builder.Services.AddScoped<IAnimeService,AnimeService>();
@@ -34,6 +33,7 @@ builder.Services.AddScoped<IChapterService,ChapterService>();
 builder.Services.AddScoped<IVideoService,VideoService>();
 builder.Services.AddScoped<IGenreService,GenreService>();
 builder.Services.AddScoped<IStudioService,StudioService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 //Mapeo de entidades y dto
 builder.Services.AddAutoMapper(typeof(MappingConfig));

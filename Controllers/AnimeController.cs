@@ -182,31 +182,6 @@ namespace AnimeWeb.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
-        // [HttpPut("{animeId}/genre/{genreId}")]
-        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        // [ProducesResponseType(StatusCodes.Status404NotFound)]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // public async Task<ActionResult<AnimeModel>> relateAnimeAndGenre(int animeId, int )
-        // {
-        //     try
-        //     {
-
-        //         AnimeModel? animeModel = await _animeService.relateAnimesAndGenres(animeId,genreId);
-
-        //         if (animeModel == null)
-        //         {
-        //             return NotFound("The genre or anime you want to search for was not found");
-        //         }
-
-        //         return Ok(animeModel);
-        //     }
-        //     catch (Exception e)
-        //     {
-
-        //         return BadRequest(e.Message);
-        //     }
-        // }
 
         [HttpGet("{id}/genres")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -268,23 +243,29 @@ namespace AnimeWeb.Controllers
             }
         }
 
-        [HttpPost("{id}/image")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("{id}/images")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> CreateImage(int id, IFormFile file)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<AnimeModel>> getAnimeAndImages(int id)
         {
             try
             {
 
-                await _animeService.CreateImage(id,file);
-                return Ok();
+                AnimeModel? anime = await _animeService.getAnimeAndImages(id);
+
+                if (anime == null)
+                {
+                    return NotFound("Anime not found");
+                }
+
+                return Ok(anime);
             }
             catch(Exception e)
             {
 
                 return BadRequest(e.Message);
-            }  
+            }
         }
 
     }

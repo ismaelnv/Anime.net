@@ -53,7 +53,7 @@ namespace AnimeWeb.Repository
             IQueryable<T> query = dbSet;
             
             if(filtro != null){
-                query = query.Where(filtro);
+                query = query.Where(filtro) ;
             }
 
             return await query.ToListAsync();
