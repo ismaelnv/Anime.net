@@ -20,7 +20,16 @@ namespace AnimeWeb.Repository
         public async Task<List<AnimeModel>> GetAnimes()
         {
 
-            return await _db.Anime.Include(A => A.Images).Include( A => A.Genres).ToListAsync();
+            List<AnimeModel> animes = await _db.Anime.Include( A => A.Images).ToListAsync();
+
+           foreach(var anime in animes)
+            {
+
+                List<GenreModel> genres = await _db.Genre.Where(g => g.animes.Any(ag => ag.Id == anime.Id)).ToListAsync();
+                anime.Genres= genres;
+            }
+
+            return animes;
         }
 
         public async Task<AnimeModel> GetanimeChaptersAsync(int id)
@@ -80,6 +89,31 @@ namespace AnimeWeb.Repository
         {
 
             return await _db.Anime.Where( A => A.Id == id).Include(A => A.Images).Include( A => A.Genres).FirstAsync();
+        }
+
+        public async Task<List<AnimeModel>>GetAnimesByName(string animeName)
+        {
+
+            List<AnimeModel> animes = new List<AnimeModel>();
+
+            using (_db) 
+            {
+
+                var allAnimes = await _db.Anime.Include(a => a.Images).ToListAsync();
+
+                animes = allAnimes
+                .Where(a => a.name.Contains(animeName,StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+                foreach(var anime in animes)
+                {
+
+                    List<GenreModel> genres = await _db.Genre.Where(g => g.animes.Any(ag => ag.Id == anime.Id)).ToListAsync();
+                    anime.Genres= genres;
+                }
+            }
+
+            return animes;
         }
     }
 }

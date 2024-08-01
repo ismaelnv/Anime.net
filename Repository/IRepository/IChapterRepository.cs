@@ -1,4 +1,3 @@
-
 using AnimeWeb.Models;
 
 namespace AnimeWeb.Repository.IRepository

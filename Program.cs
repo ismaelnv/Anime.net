@@ -15,6 +15,15 @@ var conectionString = builder.Configuration.GetConnectionString("DefaultConectio
 builder.Services.AddDbContext<DataContext>(
     option => option.UseSqlite(conectionString) 
 );
+
+//para ignorar ciclos repetitivos
+// builder.Services.AddControllers().AddJsonOptions(options =>
+// {
+//     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+//     options.JsonSerializerOptions.MaxDepth = 0;
+// });
+
+
 //Para ignorar ciclos repetitivos
 builder.Services.AddControllers().AddJsonOptions(x =>
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);

@@ -14,19 +14,6 @@ namespace AnimeWeb.Repository.IRepository
             _db = db;
         }
 
-        // public async Task<StudioModel> GetStudioAndAnimes(int id)
-        // {
-            
-        //     StudioModel studio = await _db.Studio.Where(s => s.id == id).Include(s => s.Animes).FirstAsync();
-        //     return studio;
-        // }
-
-        // public async Task<List<StudioModel>> GetByIdsAsync(List<int> studioIds)
-        // {
-            
-        //     return await _db.Studio.Where(s => studioIds.Contains(s.id)).ToListAsync();
-        // }
-
         public async Task<ImageModel> UpdateAsync(ImageModel image)
         {
 

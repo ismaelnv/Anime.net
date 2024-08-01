@@ -1,4 +1,3 @@
-using AnimeWeb.Models;
 using AnimeWeb.Repository.IRepository;
 using AnimeWeb.Service.Interface;
 using AutoMapper;
@@ -26,7 +25,6 @@ namespace AnimeWeb.Service
                 throw new BadHttpRequestException("Invalid image");
             }
 
-           // ImageModel image = _mapper.Map<ImageModel>(imageCr)
 
             await _imageRepository.CreateAsync(imageModel);
             
@@ -42,7 +40,6 @@ namespace AnimeWeb.Service
                 throw new BadHttpRequestException("Id invalid");
             }
 
-            //cAMBIAR ESTA LINEA MAS ADELANTE
             ImageModel imageModel = await _imageRepository.ObtainAsync(i => i.id == imageId);
 
             if (imageModel == null)
@@ -110,11 +107,5 @@ namespace AnimeWeb.Service
             return image;
         }
 
-        public Task<ImageModel?> updateImage(int id, ImageModel image)
-        {
-            throw new NotImplementedException();
-        }
-
-        
     }
 }        

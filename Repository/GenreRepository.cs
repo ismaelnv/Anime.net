@@ -39,12 +39,24 @@ namespace AnimeWeb.Repository
 
             using (_db) 
             {
-
+               
                 animes = await _db.Anime
-                .Where(a => a.Genres.Any(g => g.name == nameGenre))
+                .Where(a => a.Genres.Any(g => g.name == nameGenre)).Include(A => A.Images)
                 .ToListAsync();
-            }
 
+                foreach (var anime in animes)
+                {
+                    // Obtiene los animes para este género específico.
+                    var animesForGenre = await _db.Genre
+                        .Where(genre => genre.animes.Any(a => a.Id == anime.Id))
+                        //.Include(anime => anime.Genres) // Incluye los géneros para cada anime.
+                        .ToListAsync();
+
+                    // Asigna los animes al género.
+                    anime.Genres = animesForGenre;
+                }
+           }
+            
             return animes;
         }
 
@@ -52,6 +64,26 @@ namespace AnimeWeb.Repository
         {
             
             return await _db.Genre.Where(s => genreIds.Contains(s.id)).ToListAsync();
+        }
+
+        //Prueba para resolver el error de generos
+        public async Task<List<GenreModel>> GetGenres()
+        {
+            List<GenreModel> genres = await _db.Genre.ToListAsync();
+
+            // Para cada género, carga los animes asociados.
+            foreach (var genre in genres)
+            {
+                // Obtiene los animes para este género específico.
+                var animesForGenre = await _db.Anime
+                    .Where(anime => anime.Genres.Any(g => g.id == genre.id))
+                    //.Include(anime => anime.Genres) // Incluye los géneros para cada anime.
+                    .ToListAsync();
+
+                // Asigna los animes al género.
+                genre.animes = animesForGenre;
+            }  
+            return genres;
         }
     }
 }

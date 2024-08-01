@@ -1,6 +1,4 @@
-
 namespace AnimeWeb.Models;
-
 
 public class ImageCreateDto
 {

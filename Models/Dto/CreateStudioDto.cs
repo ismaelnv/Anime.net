@@ -1,4 +1,3 @@
-
 namespace AnimeWeb.Models.Dto
 {
     public class CreateStudioDto

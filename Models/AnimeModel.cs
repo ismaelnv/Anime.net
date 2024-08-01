@@ -1,4 +1,3 @@
-
 namespace AnimeWeb.Models
 {
     public class AnimeModel

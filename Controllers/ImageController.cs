@@ -1,4 +1,3 @@
-using AnimeWeb.Models;
 using AnimeWeb.Service.Interface;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -27,18 +26,18 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ImageModel>> createImage([FromBody] ImageModel imageModel)
         {
-           // try
-           // {
+           try
+           {
 
                 ImageModel? image = await _imageService.createImage(imageModel);
 
                 return Created(string.Empty, image);
-            //}
-            // catch(Exception ex)
-            // {
+            }
+            catch(Exception ex)
+            {
 
-            //     return BadRequest(ex.Message);
-            // }
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
@@ -84,7 +83,6 @@ namespace AnimeWeb.Controllers
                     return NotFound("The image you want to delete was not found");
                 }
 
-                //AnimeDto animeDto = _mapper.Map<AnimeDto>(anime);
                 return Ok(image);
             }
             catch (Exception ex)

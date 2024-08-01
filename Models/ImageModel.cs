@@ -1,4 +1,3 @@
-using AnimeWeb.Models;
 public enum ImageType
 {
     anime = 1,

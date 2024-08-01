@@ -30,7 +30,16 @@ namespace AnimeWeb.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<AnimeDto>>> getAnimes()
         {
-            return Ok(await _animeService.getAnimes());
+            try
+            {   
+               
+                return Ok(await _animeService.getAnimes());
+            }
+            catch(Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
@@ -268,5 +277,29 @@ namespace AnimeWeb.Controllers
             }
         }
 
+        [HttpGet("name/{animeName}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<AnimeDto?>>> getAnimesByName(string animeName)
+        {
+            try
+            {
+
+                IEnumerable<AnimeDto?> animes = await _animeService.getAnimesByName(animeName);
+
+                if (animes == null)
+                {
+                    return NotFound("Anime not found");
+                }
+
+                return Ok(animes);
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

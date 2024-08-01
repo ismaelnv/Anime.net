@@ -31,6 +31,5 @@ namespace AnimeWeb.Mapper
 
             CreateMap<ImageModel, ImageCreateDto>().ReverseMap();
         }
-        
     }
 }

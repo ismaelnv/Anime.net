@@ -11,10 +11,10 @@ namespace AnimeWeb.Service
 
         private readonly IGenreRepository _genreRepository;
         private readonly IMapper _mapper;
+        private readonly String baseUrl = "http://192.168.1.4:5092/img";
 
         public GenreService(IGenreRepository genreRepository,IMapper mapper)
         {
-
             _genreRepository = genreRepository;
             _mapper = mapper;
         }  
@@ -57,8 +57,8 @@ namespace AnimeWeb.Service
         public async Task<IEnumerable<GenreDto>> getGenres()
         {
 
-            IEnumerable<GenreModel> genresModel = await _genreRepository.GetAllAsync();
-            IEnumerable<GenreDto> genres = _mapper.Map<IEnumerable<GenreDto>>(genresModel);
+            List<GenreModel> genresModel = await _genreRepository.GetGenres();
+            IEnumerable<GenreDto> genres = _mapper.Map<List<GenreDto>>(genresModel);
             return genres;
         }
 
@@ -119,7 +119,7 @@ namespace AnimeWeb.Service
             return genre;
         }
 
-        public async Task<IEnumerable<AnimeModel?>> getAnimesByGenre(string nameGenre)
+        public async Task<IEnumerable<AnimeDto?>> getAnimesByGenre(string nameGenre)
         {
 
             if (nameGenre == "")
@@ -127,8 +127,19 @@ namespace AnimeWeb.Service
                 throw new BadHttpRequestException("Invalid gender name");
             }
 
-            IEnumerable<AnimeModel> animes = await _genreRepository.GetAnimesByGenreAsync(nameGenre);
-            return animes;
+            List<AnimeModel> animes = await _genreRepository.GetAnimesByGenreAsync(nameGenre);
+            IEnumerable<AnimeDto>animesDto = _mapper.Map<IEnumerable<AnimeDto>>(animes);
+            
+            foreach (var anime  in animesDto)
+            {
+                foreach (var image in anime.Images)
+                {
+                    
+                    image.name = $"{baseUrl}/{image.name}";
+                }    
+            }
+            
+            return animesDto;
         }
 
         public async Task<List<GenreModel>> getGenresId(List<int> genreIds)

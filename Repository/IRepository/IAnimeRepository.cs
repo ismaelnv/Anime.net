@@ -15,5 +15,6 @@ namespace AnimeWeb.Repository.IRepository
         Task<AnimeModel> GetAnimeAndImages(int id);
         Task<AnimeModel> GetAnimeByIdWithAttributs(int id);
         Task<List<AnimeModel>> GetAnimes();
+        Task<List<AnimeModel>>GetAnimesByName(string animeName);
     }
 }

@@ -17,5 +17,7 @@ namespace AnimeWeb.Service
         Task animeRelationshipWithStudios(int animeId, List<int> studioIds);
         Task<AnimeModel?> getAnimeAndStudios(int id);
         Task<AnimeModel?> getAnimeAndImages(int id);
+        Task<IEnumerable<AnimeDto?>> getAnimesByName(string animeName);
+        void InRouteImages(IEnumerable<AnimeDto?>animes);
     }
 }

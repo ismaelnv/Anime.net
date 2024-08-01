@@ -16,6 +16,8 @@ namespace AnimeWeb.Service
 
         private IGenreService _genreServie;
 
+        private readonly String baseUrl = "http://192.168.1.4:5092/img";
+
         public AnimeService(IAnimeRepository animeRepository,IMapper mapper,IGenreService genreService,IStudioService studioService)
         {
             
@@ -27,21 +29,11 @@ namespace AnimeWeb.Service
 
         public async Task<IEnumerable<AnimeDto>> getAnimes()
         {
-            string baseUrl = "http://192.168.1.6:5092/img";
 
             IEnumerable<AnimeModel> animeList = await _animeRepository.GetAnimes();
             IEnumerable<AnimeDto> animes = _mapper.Map<IEnumerable<AnimeDto>>(animeList);
-
-            foreach (var anime in animes)
-            {
-        
-                foreach (var image in anime.Images ){
-
-                    image.name = $"{baseUrl}/{image.name}";
-                }
-                
-            }
-           
+            
+            InRouteImages(animes);
 
             return animes;
         }
@@ -130,8 +122,6 @@ namespace AnimeWeb.Service
 
         public async Task<AnimeModel?> getAnimeChapters(int id)
         {
-
-            string baseUrl = "http://192.168.1.6:5092/img";
 
             if (id == 0)
             {
@@ -264,8 +254,43 @@ namespace AnimeWeb.Service
 
             return anime;
         }
+
+        public async Task<IEnumerable<AnimeDto?>> getAnimesByName(string animeName)
+        {
+
+            if(animeName == null)
+            {
+                throw new BadHttpRequestException("Enter a name from an anime");
+            }
+
+            List<AnimeModel> animes = await _animeRepository.GetAnimesByName(animeName);
+            IEnumerable<AnimeDto> animesDto = _mapper.Map<IEnumerable<AnimeDto>>(animes);
+
+            if(animesDto == null)
+            {
+                return null;
+            }
+
+            InRouteImages(animesDto);
+            return animesDto;
+        }
+
+        public void InRouteImages(IEnumerable<AnimeDto?> animes)
+        {
+            
+            foreach (var anime in animes)
+            {
+        
+                foreach (var image in anime.Images ){
+
+                    image.name = $"{baseUrl}/{image.name}";
+                } 
+                
+            }
+        }
     }
 }
+
 
 
 

@@ -208,8 +208,6 @@ namespace AnimeWeb.Controllers
             }
         }
 
-        //Pensando donde deberia ir este metodo
-
         [HttpGet("fromLowestToHighest")]
         public async Task<ActionResult<IEnumerable<ChapterDto>>> orderTheChaptersFromSmallestToLargest()
         {
